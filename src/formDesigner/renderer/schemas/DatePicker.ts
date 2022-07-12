@@ -1,4 +1,4 @@
-import { ISchema } from '@formily,vue'
+import { ISchema } from '@formily/vue'
 
 export const DatePicker: ISchema & { RangePicker?: ISchema } = {
   type: 'object',
