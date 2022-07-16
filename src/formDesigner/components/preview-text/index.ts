@@ -1,95 +1,107 @@
-import { defineComponent, computed } from 'vue'
-import { h, useField } from '@formily/vue'
-import { isArr, isValid } from '@formily/shared'
+import { defineComponent, computed, toRef, Ref, h } from 'vue'
 import {
   createContext,
   resolveComponent,
   useContext,
   composeExport,
 } from '../__builtins__/shared'
-import { stylePrefix } from '../__builtins__/configs'
-import type { Input as InputProps } from 'ant-design-vue/types/input/input'
-import type { Select as SelectProps } from 'ant-design-vue/types/select/select'
-import type {
-  Cascader as CascaderProps,
-  CascaderOptionType,
-} from 'ant-design-vue/types/cascader'
-import type { TimePicker as TimePickerProps } from 'ant-design-vue/types/time-picker'
-import type { DatePicker as DatePickerProps } from 'ant-design-vue/types/date-picker/date-picker'
-import type { RangePicker as RangePickerProps } from 'ant-design-vue/types/date-picker/range-picker'
-
-import { Tag } from 'ant-design-vue'
-
-import { Space } from '../space'
+import { Field } from '@formily/core'
 import { observer } from '@formily/reactive-vue'
-import type { Field } from '@formily/core'
-import { formatMomentValue } from '../__builtins__'
+import { useField } from '@formily/vue'
+import { isArr, isValid } from '@formily/shared'
+import { stylePrefix } from '../__builtins__/configs'
+import type { SelectProps } from '../select'
+import type { CascaderProps } from '../cascader'
+import type { DatePickerProps } from '../date-picker'
+import type { TimePickerProps } from '../time-picker'
+import { Space } from '../space'
+import { Tag as ElTag } from 'ant-design-vue'
 
 const prefixCls = `${stylePrefix}-preview-text`
 const PlaceholderContext = createContext('N/A')
 
-export const usePlaceholder = (value?: any) => {
+export const usePlaceholder = (value?: Ref<any>) => {
   const placeholderCtx = useContext(PlaceholderContext)
   const placeholder = computed(() => {
-    return isValid(value) && value !== ''
-      ? value
+    return isValid(value?.value) && value?.value !== ''
+      ? value?.value
       : resolveComponent(placeholderCtx.value) || 'N/A'
   })
-
   return placeholder
 }
 
+const Input = defineComponent({
+  name: 'FPreviewTextInput',
+  props: ['value'],
+  setup(props, { attrs, slots }) {
+    // const value = toRef(props, 'value')
+    // const placeholder = usePlaceholder(value)
+    return () => {
+      return h(
+        Space,
+        {
+          class: [prefixCls],
+          style: attrs.style,
+        },
+        {
+          default: () =>
+            [
+              slots?.addonBefore?.(),
+              slots?.prefix?.(),
+              // placeholder.value,
+              slots?.suffix?.(),
+              slots?.addonAfter?.(),
+            ].filter((child) => !!child),
+        }
+      )
+    }
+  },
+})
+
 const Select = observer(
-  // eslint-disable-next-line vue/one-component-per-file
   defineComponent<SelectProps>({
-    name: 'PreviewTextSelect',
-    props: [],
+    name: 'FPreviewTextSelect',
     setup(_props, { attrs }) {
       const fieldRef = useField<Field>()
       const field = fieldRef.value
       const props = attrs as unknown as SelectProps
+      const dataSource: any[] = field?.dataSource?.length
+        ? field.dataSource
+        : props?.options?.length
+        ? props.options
+        : []
       const placeholder = usePlaceholder()
       const getSelected = () => {
         const value = props.value
-        if (props.mode === 'multiple' || props.mode === 'tags') {
-          if (props.labelInValue) {
-            return isArr(value) ? value : []
-          }
+        if (props.multiple) {
           return isArr(value)
             ? value.map((val) => ({ label: val, value: val }))
             : []
         } else {
-          if (props.labelInValue) {
-            return isValid(value) ? [value] : []
-          }
           return isValid(value) ? [{ label: value, value }] : []
         }
       }
 
       const getLabels = () => {
         const selected = getSelected()
-        const dataSource: any[] = field?.dataSource?.length
-          ? field.dataSource
-          : props?.options?.length
-          ? props.options
-          : []
         if (!selected.length) {
           return h(
-            Tag,
+            ElTag,
             {},
             {
               default: () => placeholder.value,
             }
           )
         }
-        return selected.map((target, key) => {
+        return selected.map(({ value, label }, key) => {
           const text =
-            dataSource?.find((item) => item.value == target?.value)?.label ||
-            target?.label
+            dataSource?.find((item) => item.value == value)?.label || label
           return h(
-            Tag,
+            ElTag,
             {
               key,
+              type: 'info',
+              effect: 'light',
             },
             {
               default: () => text || placeholder.value,
@@ -114,13 +126,68 @@ const Select = observer(
   })
 )
 
-// eslint-disable-next-line vue/one-component-per-file
-const Input = observer(
-  defineComponent<InputProps>({
-    name: 'PreviewTextInput',
-    setup(_props, { attrs, slots }) {
+const Cascader = observer(
+  defineComponent<CascaderProps>({
+    name: 'FPreviewTextCascader',
+    setup(_props, { attrs }) {
+      const fieldRef = useField<Field>()
+      const field = fieldRef.value
+      const props = attrs as unknown as CascaderProps
+      const dataSource: any[] = field?.dataSource?.length
+        ? field.dataSource
+        : props?.options?.length
+        ? props.options
+        : []
+      const placeholder = usePlaceholder()
+      const valueKey = props.props?.value || 'value'
+      const labelKey = props.props?.label || 'label'
+      const getSelected = () => {
+        return isArr(props.value) ? props.value : []
+      }
+
+      const findLabel: (value: any, dataSource: any) => any = (
+        value,
+        dataSource
+      ) => {
+        for (let i = 0; i < dataSource?.length; i++) {
+          const item = dataSource[i]
+          if (item?.[valueKey] === value) {
+            return item?.[labelKey]
+          } else {
+            const childLabel = findLabel(value, item?.children)
+            if (childLabel) return childLabel
+          }
+        }
+      }
+
+      const getLabels = () => {
+        const selected = getSelected()
+        if (!selected?.length) {
+          return h(
+            ElTag,
+            {},
+            {
+              default: () => placeholder.value,
+            }
+          )
+        }
+        return selected.map((value, key) => {
+          const text = findLabel(value, dataSource)
+          return h(
+            ElTag,
+            {
+              key,
+              type: 'info',
+              effect: 'light',
+            },
+            {
+              default: () => text || placeholder.value,
+            }
+          )
+        })
+      }
+
       return () => {
-        const placeholder = usePlaceholder(attrs.value)
         return h(
           Space,
           {
@@ -128,13 +195,7 @@ const Input = observer(
             style: attrs.style,
           },
           {
-            default: () => [
-              slots?.prepend?.(),
-              slots?.prefix?.(),
-              placeholder.value,
-              slots?.suffix?.(),
-              slots?.append?.(),
-            ],
+            default: () => getLabels(),
           }
         )
       }
@@ -142,9 +203,73 @@ const Input = observer(
   })
 )
 
-// eslint-disable-next-line vue/one-component-per-file
+const DatePicker = defineComponent<DatePickerProps>({
+  name: 'FPreviewTextDatePicker',
+  setup(_props, { attrs }) {
+    const props = attrs as unknown as DatePickerProps
+    const placeholder = usePlaceholder()
+    const getLabels = () => {
+      if (isArr(props.value)) {
+        const labels = (props.value as any[]).map(
+          (value: string | Date) => value || placeholder.value
+        )
+
+        return labels.join('~')
+      } else {
+        return props.value || placeholder.value
+      }
+    }
+
+    return () => {
+      return h(
+        'div',
+        {
+          class: [prefixCls],
+          style: attrs.style,
+        },
+        {
+          default: () => getLabels(),
+        }
+      )
+    }
+  },
+})
+
+const TimePicker = defineComponent<TimePickerProps>({
+  name: 'FPreviewTextTimePicker',
+  setup(_props, { attrs }) {
+    const props = attrs as unknown as TimePickerProps
+    // const format = props.pickerOptions?.format || 'HH:mm:ss'
+    const placeholder = usePlaceholder()
+    const getLabels = () => {
+      if (isArr(props.value)) {
+        const labels = props.value.map(
+          (value: string | Date) => value || placeholder.value
+        )
+
+        return labels.join('~')
+      } else {
+        return props.value || placeholder.value
+      }
+    }
+
+    return () => {
+      return h(
+        'div',
+        {
+          class: [prefixCls],
+          style: attrs.style,
+        },
+        {
+          default: () => getLabels(),
+        }
+      )
+    }
+  },
+})
+
 const Text = defineComponent<any>({
-  name: 'PreviewText',
+  name: 'FPreviewText',
   setup(_props, { attrs }) {
     const placeholder = usePlaceholder()
 
@@ -163,177 +288,14 @@ const Text = defineComponent<any>({
   },
 })
 
-export type PreviewCascaderProps = CascaderProps & {
-  options: CascaderOptionType[]
-}
-const Cascader = observer(
-  // eslint-disable-next-line vue/one-component-per-file
-  defineComponent<PreviewCascaderProps>({
-    name: 'PreviewTextCascader',
-    props: [],
-    setup(_props, { attrs }) {
-      const fieldRef = useField<Field>()
-      const field = fieldRef.value
-      const props = attrs as unknown as PreviewCascaderProps
-      const dataSource: any[] = field?.dataSource?.length
-        ? field.dataSource
-        : props?.options?.length
-        ? props.options
-        : []
-      const placeholder = usePlaceholder()
-      const getSelected = () => {
-        return isArr(props.value) ? props.value : []
-      }
-
-      const findLabel = (value: any, dataSource: any[]) => {
-        for (let i = 0; i < dataSource?.length; i++) {
-          const item = dataSource[i]
-          if (item?.value === value) {
-            return item?.label
-          } else {
-            const childLabel = findLabel(value, item?.children)
-            if (childLabel) return childLabel
-          }
-        }
-      }
-
-      const getLabels = () => {
-        const selected = getSelected()
-        if (!selected?.length) {
-          return h(
-            Tag,
-            {},
-            {
-              default: () => placeholder.value,
-            }
-          )
-        }
-        return selected.map((value, key) => {
-          const text = findLabel(value, dataSource)
-          return h(
-            Tag,
-            {
-              key,
-            },
-            {
-              default: () => text || placeholder.value,
-            }
-          )
-        })
-      }
-
-      return () => {
-        return h(
-          Space,
-          {
-            class: [prefixCls],
-            style: attrs.style,
-          },
-          {
-            default: () => getLabels(),
-          }
-        )
-      }
-    },
-  })
-)
-
-// eslint-disable-next-line vue/one-component-per-file
-const TimePicker = defineComponent<TimePickerProps>({
-  name: 'PreviewTextTimePicker',
-  setup(_props, { attrs }) {
-    const props = attrs as unknown as TimePickerProps
-    const placeholder = usePlaceholder()
-    const getLabels = () => {
-      const labels = formatMomentValue(
-        props.value,
-        props.format,
-        placeholder.value
-      )
-      return isArr(labels) ? labels.join('~') : labels
-    }
-    return () => {
-      return h(
-        'div',
-        {
-          class: [prefixCls],
-          style: attrs.style,
-        },
-        {
-          default: () => getLabels() as any,
-        }
-      )
-    }
-  },
-})
-
-// eslint-disable-next-line vue/one-component-per-file
-const DatePicker = defineComponent<DatePickerProps>({
-  name: 'PreviewTextDatePicker',
-  setup(_props, { attrs }) {
-    const props = attrs as unknown as DatePickerProps
-    const placeholder = usePlaceholder()
-    const getLabels = () => {
-      const labels = formatMomentValue(
-        props.value,
-        props.format,
-        placeholder.value
-      )
-      return isArr(labels) ? labels.join('~') : labels
-    }
-    return () => {
-      return h(
-        'div',
-        {
-          class: [prefixCls],
-          style: attrs.style,
-        },
-        {
-          default: () => getLabels() as any,
-        }
-      )
-    }
-  },
-})
-
-// eslint-disable-next-line vue/one-component-per-file
-const DateRangePicker = defineComponent<RangePickerProps>({
-  name: 'PreviewTextDatePicker',
-  setup(_props, { attrs }) {
-    const props = attrs as unknown as RangePickerProps
-    const placeholder = usePlaceholder()
-    const getLabels = () => {
-      const labels = formatMomentValue(
-        props.value,
-        props.format,
-        placeholder.value
-      )
-      return isArr(labels) ? labels.join('~') : labels
-    }
-    return () => {
-      return h(
-        'div',
-        {
-          class: [prefixCls],
-          style: attrs.style,
-        },
-        {
-          default: () => getLabels() as any,
-        }
-      )
-    }
-  },
-})
-
 export const PreviewText = composeExport(Text, {
   Input,
   Select,
   Cascader,
   DatePicker,
-  DateRangePicker,
   TimePicker,
   Placeholder: PlaceholderContext.Provider,
   usePlaceholder,
-})
+}) as any
 
 export default PreviewText

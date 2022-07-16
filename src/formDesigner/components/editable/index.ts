@@ -52,7 +52,6 @@ const EditableInner = observer(
       const pattern = useInitialPattern(fieldRef)
       const prefixCls = `${stylePrefix}-editable`
       const setEditable = (payload: boolean) => {
-        // console.log('pattern', pattern)
         if (pattern.value !== 'editable') return
         fieldRef.value.setPattern(payload ? 'editable' : 'readPretty')
       }

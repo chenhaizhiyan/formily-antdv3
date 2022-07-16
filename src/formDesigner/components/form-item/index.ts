@@ -1,7 +1,6 @@
 import {
   ref,
   defineComponent,
-  onMounted,
   Ref,
   onBeforeUnmount,
   watch,
@@ -11,9 +10,6 @@ import {
 import { isVoidField } from '@formily/core'
 import { connect, mapProps } from '@formily/vue'
 
-// error: () => h('i', { class: 'el-icon-circle-close' }, {}),
-//   success: () => h('i', { class: 'el-icon-circle-check' }, {}),
-//   warning: () => h('i', { class: 'el-icon-warning-outline' }, {}),
 
 import {
   InfoCircleOutlined,
@@ -22,13 +18,17 @@ import {
   ExclamationCircleOutlined,
 } from '@ant-design/icons-vue'
 import Icon from '@ant-design/icons-vue'
-
 import { useFormLayout, FormLayoutShallowContext } from '../form-layout'
-import { composeExport, resolveComponent, stylePrefix } from '../__builtins__'
+import {
+  composeExport,
+  resolveComponent,
+  stylePrefix,
+  getStyleNumber,
+} from '../__builtins__'
 import { Component } from 'vue'
-import { Tooltip } from 'ant-design-vue'
+import { Tooltip as AntTooltip } from 'ant-design-vue'
 import ResizeObserver from 'resize-observer-polyfill'
-import { IFormGridProps, useGridColumn } from '../form-grid'
+import { useGridColumn } from '../form-grid'
 
 export type FormItemProps = {
   className?: string
@@ -151,7 +151,7 @@ export const FormBaseItem = defineComponent({
     bordered: { default: true },
     inset: { default: false },
   },
-  setup(props, { slots, attrs }) {
+  setup(props, { slots }) {
     const active = ref(false)
     const deepLayoutRef = useFormLayout()
     const prefixCls = `${stylePrefix}-form-item`
@@ -207,12 +207,16 @@ export const FormBaseItem = defineComponent({
       let enableCol = false
       if (labelWidth || wrapperWidth) {
         if (labelWidth) {
-          labelStyle.width = `${labelWidth}px`
-          labelStyle.maxWidth = `${labelWidth}px`
+          labelStyle.width =
+            labelWidth === 'auto' ? undefined : getStyleNumber(labelWidth)
+          labelStyle.maxWidth =
+            labelWidth === 'auto' ? undefined : getStyleNumber(labelWidth)
         }
         if (wrapperWidth) {
-          wrapperStyle.width = `${wrapperWidth}px`
-          wrapperStyle.maxWidth = `${wrapperWidth}px`
+          wrapperStyle.width =
+            wrapperWidth === 'auto' ? undefined : getStyleNumber(wrapperWidth)
+          wrapperStyle.maxWidth =
+            wrapperWidth === 'auto' ? undefined : getStyleNumber(wrapperWidth)
         }
         // 栅格模式
       } else if (labelCol || wrapperCol) {
@@ -283,7 +287,7 @@ export const FormBaseItem = defineComponent({
         const isTextTooltip = tooltip && tooltipLayout === 'text'
         if (isTextTooltip || overflow.value) {
           return h(
-            Tooltip,
+            AntTooltip,
             {
               placement: 'top',
             },
@@ -316,7 +320,7 @@ export const FormBaseItem = defineComponent({
             {
               default: () => [
                 h(
-                  Tooltip,
+                  AntTooltip,
                   {
                     props: {
                       placement: 'top',

@@ -1,11 +1,12 @@
-import { defineComponent } from 'vue'
-import type { ArrayField } from '@formily/core'
-import { useField, useFieldSchema, RecursionField, h } from '@formily/vue'
+import { defineComponent, h } from 'vue'
+import { ArrayField } from '@formily/core'
+import { useField, useFieldSchema, RecursionField } from '@formily/vue'
 import { observer } from '@formily/reactive-vue'
-import type { ISchema } from '@formily/json-schema'
+import { ISchema } from '@formily/json-schema'
+import Draggable from 'vuedraggable'
+
 import { stylePrefix } from '../__builtins__/configs'
 import { ArrayBase } from '../array-base'
-import { SlickList, SlickItem } from 'vue-slicksort'
 import { composeExport } from '../__builtins__/shared'
 
 const isAdditionComponent = (schema: ISchema) => {
@@ -18,7 +19,8 @@ export interface IArrayItemsItemProps {
 
 const ArrayItemsInner = observer(
   defineComponent({
-    name: 'ArrayItems',
+    name: 'FArrayItems',
+    inheritAttrs: false,
     setup() {
       const fieldRef = useField<ArrayField>()
       const schemaRef = useFieldSchema()
@@ -30,88 +32,79 @@ const ArrayItemsInner = observer(
         const field = fieldRef.value
         const schema = schemaRef.value
         const dataSource = Array.isArray(field.value) ? field.value.slice() : []
-        if (!schema) throw new Error('can not found schema object')
+
+        console.log('dataSource:', dataSource)
 
         const renderItems = () => {
-          const items = dataSource?.map((item, index) => {
+          const itemSlot = ({
+            element,
+            index,
+          }: {
+            element: any
+            index: number
+          }) => {
             const items = Array.isArray(schema.items)
               ? schema.items[index] || schema.items[0]
               : schema.items
-            const key = getKey(item, index)
+            console.log('element:', element)
+            const key = getKey(element, index)
             return h(
-              ArrayBase.Item,
-              {
-                key,
-                props: {
+              'div',
+              {},
+              h(
+                ArrayBase.Item,
+                {
+                  key,
                   index,
-                  record: item,
+                  record: element,
                 },
-              },
-              {
-                default: () =>
-                  h(
-                    SlickItem,
-                    {
-                      class: [`${prefixCls}-item-inner`],
-                      props: {
+                {
+                  default: () =>
+                    h(
+                      'div',
+                      {
+                        class: [`${prefixCls}-item-inner`],
                         index,
+                        key,
                       },
-                      key,
-                    },
-                    {
-                      default: () =>
-                        h(
-                          RecursionField,
-                          {
-                            props: {
-                              schema: items,
-                              name: index,
-                            },
-                          },
-                          {}
-                        ),
-                    }
-                  ),
-              }
+                      h(RecursionField, {
+                        schema: items,
+                        name: index,
+                      })
+                    ),
+                }
+              )
             )
-          })
+          }
 
           return h(
-            SlickList,
+            Draggable,
             {
               class: [`${prefixCls}-list`],
-              props: {
-                useDragHandle: true,
-                lockAxis: 'y',
-                helperClass: `${prefixCls}-sort-helper`,
-                value: [],
-              },
-              on: {
-                'sort-end': ({ oldIndex, newIndex }) => {
+              value: [],
+              list: dataSource,
+              handle: `.${stylePrefix}-array-base-sort-handle`,
+              itemKey: (item: any, index: number) => {console.log('item---:', item); return getKey(item, index)},
+              onChange(evt: any) {
+                if (evt.moved) {
+                  const { oldIndex, newIndex } = evt.moved
                   if (Array.isArray(keyMap)) {
                     keyMap.splice(newIndex, 0, keyMap.splice(oldIndex, 1)[0])
                   }
                   field.move(oldIndex, newIndex)
-                },
+                }
               },
             },
-            { default: () => items }
+            { item: itemSlot }
           )
         }
-
         const renderAddition = () => {
-          return schema.reduceProperties((addition, schema, key) => {
+          return schema.reduceProperties((addition, schema) => {
             if (isAdditionComponent(schema)) {
-              return h(
-                RecursionField,
-                {
-                  props: {
-                    schema,
-                    name: key,
-                  },
-                },
-                {}
-              )
+              return h(RecursionField, {
+                schema,
+                name: schema.name || 'addition',
+              })
             }
             return addition
           }, null)
@@ -120,9 +113,7 @@ const ArrayItemsInner = observer(
         return h(
           ArrayBase,
           {
-            props: {
-              keyMap,
-            },
+            keyMap,
           },
           {
             default: () =>
@@ -130,9 +121,8 @@ const ArrayItemsInner = observer(
                 'div',
                 {
                   class: [prefixCls],
-                  on: {
-                    // eslint-disable-next-line @typescript-eslint/no-empty-function
-                    change: () => {},
+                  onChange: () => {
+                    return
                   },
                 },
                 {
@@ -146,8 +136,8 @@ const ArrayItemsInner = observer(
   })
 )
 
-const ArrayItemsItem = defineComponent<IArrayItemsItemProps>({
-  name: 'ArrayItemsItem',
+const ArrayItemsItem = defineComponent({
+  name: 'FArrayItemsItem',
   props: ['type'],
   setup(props, { attrs, slots }) {
     const prefixCls = `${stylePrefix}-array-items`
@@ -157,12 +147,9 @@ const ArrayItemsItem = defineComponent<IArrayItemsItemProps>({
         'div',
         {
           class: [`${prefixCls}-${props.type || 'card'}`],
-          attrs: {
-            ...attrs,
-          },
-          on: {
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            change: () => {},
+          ...attrs,
+          onChange: () => {
+            return
           },
         },
         slots
