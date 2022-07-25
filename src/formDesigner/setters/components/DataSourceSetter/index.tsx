@@ -38,7 +38,6 @@ export const DataSourceSetter = observer(
         inheritAttrs: false,
         emits: ['change'],
         setup(props, { emit }) {
-            console.log('props:', props)
             const theme = useTheme()
             const prefixRef = usePrefix('data-source-setter')
             const modalVisibleRef = ref(false)

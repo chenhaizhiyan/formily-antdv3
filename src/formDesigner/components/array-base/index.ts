@@ -90,7 +90,6 @@ const isObjectValue: (schema: Schema) => boolean = (schema: Schema) => {
 }
 
 const useKey = (schema: Schema) => {
-  console.log('useKey--schema:', schema)
   const isObject = isObjectValue(schema)
   let keyMap: WeakMap<Record<string, unknown>, string> | string[] | null = null
 
@@ -108,11 +107,8 @@ const useKey = (schema: Schema) => {
     keyMap,
     getKey: (record: any, index: number) => {
       if (keyMap instanceof WeakMap) {
-        console.log('keyMap:', keyMap)
         if (!keyMap.has(record)) {
-          console.log('record:', record)
           keyMap.set(record, uid())
-          console.log('record33:', record)
         }
         return `${keyMap.get(record)}-${index}`
       }

@@ -16,9 +16,9 @@ export const Radio: DnFC<VNode> = composeExport(
       extends: ['Field'],
       selector: (node) => node.props?.['x-component'] === 'Radio.Group',
       designerProps: {
-        propsSchema: createFieldSchema(AllSchemas.Checkbox.Group),
+        propsSchema: createFieldSchema(AllSchemas.Radio.Group),
       },
-      designerLocales: AllLocales.CheckboxGroup,
+      designerLocales: AllLocales.RadioGroup,
     }),
     Resource: createResource({
       icon: 'RadioGroupSource',
