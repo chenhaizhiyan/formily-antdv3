@@ -5,7 +5,7 @@ import {
   useSelection,
 } from '../../hooks'
 import { observer } from '@formily/reactive-vue'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import { computed, defineComponent } from 'vue-demi'
 import { isNum } from '@designable/shared'
 import { FragmentComponent as Fragment } from '@formily/vue'

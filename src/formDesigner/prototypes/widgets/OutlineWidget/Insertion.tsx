@@ -1,7 +1,7 @@
 import { useOutlineDragon, usePrefix } from '../../hooks'
 import { ClosestPosition } from '@designable/core'
 import { observer } from '@formily/reactive-vue'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import { defineComponent } from 'vue-demi'
 import { CSSProperties } from '@vue/runtime-dom'
 import { isNum } from '@designable/shared'

@@ -1,8 +1,8 @@
 import { connect, mapProps, h, mapReadPretty } from '@formily/vue'
 import { defineComponent } from 'vue'
-import { PreviewText } from '@form-designer/components'
+import { PreviewText } from '@formily/antdv-x3'
 import { Select as ASelect, SelectOption as ASelectOption } from 'ant-design-vue'
-import { resolveComponent } from '@form-designer/components/__builtins__'
+import { resolveComponent } from '@formily/antdv-x3/esm/__builtins__'
 
 const SelectOption = defineComponent({
   name: 'ASelect',

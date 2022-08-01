@@ -9,7 +9,7 @@ import {
   VoidField,
 } from '@formily/vue'
 import { observer } from '@formily/reactive-vue'
-import { FormItem } from '@form-designer/components'
+import { FormItem } from '@formily/antdv-x3'
 import { each, reduce } from '@formily/shared'
 import { createBehavior } from '@designable/core'
 import {
@@ -22,7 +22,7 @@ import { isArr, isFn, isStr } from '@designable/shared'
 import { Container } from '../../common/Container'
 import { AllLocales } from '../../locales'
 import { defineComponent } from 'vue'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 
 Schema.silent(true)
 

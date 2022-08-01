@@ -1,7 +1,7 @@
 import { defineComponent } from '@vue/runtime-core'
 import { usePrefix } from '../hooks'
 import { useStyle } from '../shared'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 
 export interface IWorkspaceItemProps {
   style?: any

@@ -1,5 +1,5 @@
 import { createForm } from '@formily/core'
-import { Form, FormLayout } from '@form-designer/components'
+import { Form, FormLayout } from '@formily/antdv-x3'
 import {
   IconWidget,
   NodePathWidget,

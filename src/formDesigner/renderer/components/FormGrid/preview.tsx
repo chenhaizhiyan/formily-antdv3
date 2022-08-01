@@ -1,4 +1,4 @@
-import { FormGrid as FormilyGird } from '@form-designer/components'
+import { FormGrid as FormilyGird } from '@formily/antdv-x3'
 import { TreeNode, createBehavior, createResource } from '@designable/core'
 import {
   DnFC,
@@ -13,7 +13,7 @@ import { AllSchemas } from '../../schemas'
 import { AllLocales } from '../../locales'
 import './styles.less'
 
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import type { DefineComponent, VueComponent } from '@formily/vue'
 import { defineComponent } from 'vue-demi'
 import { FragmentComponent as Fragment, h as CreateElement } from '@formily/vue'

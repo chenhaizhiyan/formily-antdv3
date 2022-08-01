@@ -1,5 +1,5 @@
 // import React, { Fragment, useRef, useMemo } from 'react'
-import { FormItem } from '@form-designer/components'
+import { FormItem } from '@formily/antdv-x3'
 import { useField } from '@formily/vue'
 import { observer } from '@formily/reactive-vue'
 import { observable } from '@formily/reactive'
@@ -7,7 +7,7 @@ import { IconWidget, usePrefix } from '@form-designer/prototypes'
 import cls from 'classnames'
 import './styles.less'
 import { defineComponent, ref, unref } from 'vue-demi'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 
 const ExpandedMap = new Map<string, boolean>()
 

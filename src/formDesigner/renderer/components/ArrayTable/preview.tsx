@@ -7,7 +7,7 @@ import {
   useNodeIdProps,
   DnFC,
 } from "@form-designer/prototypes";
-import { ArrayBase } from "@form-designer/components";
+import { ArrayBase } from "@formily/antdv-x3";
 import { observer } from "@formily/reactive-vue";
 import { LoadTemplate } from "../../common/LoadTemplate";
 import cls from "classnames";
@@ -24,7 +24,7 @@ import { createVoidFieldSchema } from "../Field";
 import { AllSchemas } from "../../schemas";
 import { AllLocales } from "../../locales";
 
-import { composeExport } from "@form-designer/components/__builtins__";
+import { composeExport } from "@formily/antdv-x3/esm/__builtins__";
 import { defineComponent, getCurrentInstance, onMounted } from "vue-demi";
 import { ref, VNode } from "vue";
 import { uid } from "@designable/shared";

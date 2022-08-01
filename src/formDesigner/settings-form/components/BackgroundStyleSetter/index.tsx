@@ -1,7 +1,7 @@
 import { useField, Field, FragmentComponent } from '@formily/vue'
 import { observer } from '@formily/reactive-vue'
 import { usePrefix } from '@form-designer/prototypes'
-import { Select, Input } from '@form-designer/components'
+import { Select, Input } from '@formily/antdv-x3'
 import { FoldItem } from '../FoldItem'
 import { ColorInput } from '../ColorInput'
 import { BackgroundSizeInput } from '../SizeInput'

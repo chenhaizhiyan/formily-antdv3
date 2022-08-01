@@ -1,5 +1,5 @@
 import { createBehavior, createResource } from '@designable/core'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import type { VueComponent } from '@formily/vue'
 import type { CSSProperties } from '@vue/runtime-dom'
 import { DnFC } from '@form-designer/prototypes'

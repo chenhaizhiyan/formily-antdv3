@@ -3,7 +3,7 @@ import { ArrayField } from '@formily/core'
 import { useField, Schema, ISchema, SchemaSymbol } from '@formily/vue'
 import { observer } from '@formily/reactive-vue'
 import { GlobalRegistry } from '@designable/core'
-import { ArrayItems } from '@form-designer/components'
+import { ArrayItems } from '@formily/antdv-x3'
 import { FoldItem } from '@form-designer/settings-form'
 import {  Select } from 'ant-design-vue'
 const {Option} = Select

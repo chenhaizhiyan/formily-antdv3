@@ -1,5 +1,5 @@
-import { TimePicker as FormilyTimePicker } from '@form-designer/components'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { TimePicker as FormilyTimePicker } from '@formily/antdv-x3'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import type { VueComponent } from '@formily/vue'
 import { createBehavior, createResource } from '@designable/core'
 import { DnFC } from '@form-designer/prototypes'

@@ -12,7 +12,7 @@ import {
 import { observer } from '@formily/reactive-vue'
 import { TreeNode } from '@designable/core'
 import { defineComponent } from 'vue-demi'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import { CSSProperties, toRef } from '@vue/runtime-dom'
 import { isNum } from '@designable/shared'
 export interface ISelectionBoxProps {

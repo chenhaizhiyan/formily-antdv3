@@ -16,7 +16,7 @@ import { AllSchemas } from '../../schemas'
 import { AllLocales } from '../../locales'
 import { matchComponent } from '../../shared'
 
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import type { VueComponent } from '@formily/vue'
 import { DefineComponent, defineComponent, nextTick, ref } from 'vue-demi'
 

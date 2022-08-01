@@ -13,7 +13,7 @@ import {
   unref,
 } from 'vue-demi'
 import { CSSProperties, Ref } from '@vue/runtime-dom'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 
 const useMouseHover = (
   refInstance: Ref<HTMLElement | undefined>,

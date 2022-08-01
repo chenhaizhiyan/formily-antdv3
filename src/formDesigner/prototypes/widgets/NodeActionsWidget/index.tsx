@@ -1,12 +1,12 @@
 import { observer } from '@formily/reactive-vue'
-import { Space } from '@form-designer/components'
+import { Space } from '@formily/antdv-x3'
 import { Button as Button } from 'ant-design-vue'
 import { usePrefix, useTreeNode, useSelected } from '../../hooks'
 import { IconWidget } from '../IconWidget'
 import { TextWidget } from '../TextWidget'
 import cls from 'classnames'
 import './styles.less'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import { CSSProperties, defineComponent, VNode, ComponentCustomProps } from 'vue-demi'
 
 // export interface INodeActionsWidgetProps {

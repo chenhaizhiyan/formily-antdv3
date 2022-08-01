@@ -1,7 +1,7 @@
 import { IconWidget } from '../IconWidget'
 import { useOperation, usePrefix } from '../../hooks'
 import { Button as Button } from 'ant-design-vue'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import { defineComponent } from 'vue-demi'
 
 // export interface IDeleteProps {

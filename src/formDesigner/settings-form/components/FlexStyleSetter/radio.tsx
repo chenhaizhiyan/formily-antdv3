@@ -4,8 +4,8 @@ import {
   composeExport,
   resolveComponent,
   SlotTypes,
-} from '@form-designer/components/__builtins__'
-import { PreviewText } from '@form-designer/components'
+} from '@formily/antdv-x3/esm/__builtins__'
+import { PreviewText } from '@formily/antdv-x3'
 
 import { Radio as ARadio, RadioGroup as ARadioGroup, RadioButton as ARadioButton } from 'ant-design-vue'
 

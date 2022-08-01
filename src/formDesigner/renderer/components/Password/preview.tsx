@@ -1,5 +1,5 @@
-import { Input as FormilyPassword } from '@form-designer/components'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { Input as FormilyPassword } from '@formily/antdv-x3'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import { VueComponent, connect, mapProps } from '@formily/vue'
 import { createBehavior, createResource } from '@designable/core'
 import { DnFC } from '@form-designer/prototypes'

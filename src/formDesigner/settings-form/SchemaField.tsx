@@ -13,7 +13,7 @@ import {
   ValueInput,
   DrawerSetter,
 } from './components'
-import * as Antdv from '@form-designer/components';
+import * as Antdv from '@formily/antdv-x3';
 import { Slider } from '@form-designer/renderer/components/Slider/preview';
 import { FormItemSwitcher } from '@form-designer/renderer/common/FormItemSwitcher'
 

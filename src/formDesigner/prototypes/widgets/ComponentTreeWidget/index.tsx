@@ -7,7 +7,7 @@ import { observer } from '@formily/reactive-vue'
 import cls from 'classnames'
 import './styles.less'
 import { defineComponent, PropType, provide, ref, toRef } from 'vue-demi'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import { VNode } from 'vue'
 
 export interface IComponentTreeWidgetProps {

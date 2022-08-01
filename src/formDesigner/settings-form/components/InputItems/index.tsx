@@ -2,7 +2,7 @@ import { usePrefix, IconWidget, useContext } from '@form-designer/prototypes'
 import cls from 'classnames'
 import { defineComponent, computed, InjectionKey, provide, Ref } from 'vue-demi'
 import './styles.less'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 export interface IInputItemsContext {
   width?: string | number
   vertical?: boolean

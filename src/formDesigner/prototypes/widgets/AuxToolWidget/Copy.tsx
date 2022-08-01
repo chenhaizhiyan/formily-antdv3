@@ -3,7 +3,7 @@ import { IconWidget } from '../IconWidget'
 import { Button } from 'ant-design-vue'
 import { defineComponent } from 'vue-demi'
 import { useStyle } from '@form-designer/prototypes'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 
 // export interface ICopyProps {
 //   node: TreeNode

@@ -1,5 +1,5 @@
-import { Cascader as FormilyCascader } from '@form-designer/components'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { Cascader as FormilyCascader } from '@formily/antdv-x3'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import { createBehavior, createResource } from '@designable/core'
 import { DnFC } from '@form-designer/prototypes'
 import { createFieldSchema } from '../Field'

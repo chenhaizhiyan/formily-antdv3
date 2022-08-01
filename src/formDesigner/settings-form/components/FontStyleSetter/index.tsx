@@ -1,7 +1,7 @@
 import { usePrefix, IconWidget } from '@form-designer/prototypes'
 import { observer } from '@formily/reactive-vue'
 import { useField, Field } from '@formily/vue'
-import { Radio, InputNumber } from '@form-designer/components'
+import { Radio, InputNumber } from '@formily/antdv-x3'
 import { Select } from './select'
 import { FoldItem } from '../FoldItem'
 import { InputItems } from '../InputItems'

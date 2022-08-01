@@ -1,14 +1,14 @@
 import { createBehavior, createResource } from '@designable/core'
 import { createForm } from '@formily/core'
 import { observer } from '@formily/reactive-vue'
-import { Form as FormilyForm } from '@form-designer/components'
+import { Form as FormilyForm } from '@formily/antdv-x3'
 import { usePrefix, DnFC, useStyle } from '@form-designer/prototypes'
 import { AllSchemas } from '../../schemas'
 import { AllLocales } from '../../locales'
 import './styles.less'
 
 import { computed, defineComponent, getCurrentInstance, unref } from 'vue-demi'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 
 const FormComponent = observer(
   defineComponent({

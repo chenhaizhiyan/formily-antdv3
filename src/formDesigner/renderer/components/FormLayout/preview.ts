@@ -1,4 +1,4 @@
-import { FormLayout as FormilyFormLayout } from '@form-designer/components'
+import { FormLayout as FormilyFormLayout } from '@formily/antdv-x3'
 import { VueComponent } from '@formily/vue'
 import { createBehavior, createResource } from '@designable/core'
 import { DnFC } from '@form-designer/prototypes'
@@ -6,7 +6,7 @@ import { withContainer } from '../../common/Container'
 import { createVoidFieldSchema } from '../Field'
 import { AllSchemas } from '../../schemas'
 import { AllLocales } from '../../locales'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 
 export const FormLayout =
   composeExport(withContainer(FormilyFormLayout), {

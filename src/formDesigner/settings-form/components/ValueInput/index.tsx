@@ -5,7 +5,7 @@
 import { createPolyInput } from '../PolyInput'
 import { Select as Select, Popover, Button as Button } from 'ant-design-vue'
 const {Option} = Select;
-import { InputNumber, Input } from '@form-designer/components'
+import { InputNumber, Input } from '@formily/antdv-x3'
 import { defineComponent } from 'vue-demi'
 import { Codemirror } from 'vue-codemirror'
 import { javascript } from '@codemirror/lang-javascript'

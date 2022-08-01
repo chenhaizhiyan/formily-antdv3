@@ -4,7 +4,7 @@ import { autorun, observe } from '@formily/reactive'
 import { observer } from '@formily/reactive-vue'
 import { NodeTitleWidget } from '../NodeTitleWidget'
 import './styles.less'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import { defineComponent, ref, unref, onBeforeUnmount } from 'vue-demi'
 import { useEffect } from '../../shared/useEffect'
 

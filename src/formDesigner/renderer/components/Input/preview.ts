@@ -1,10 +1,10 @@
-import { Input as FormilyInput } from '@form-designer/components'
+import { Input as FormilyInput } from '@formily/antdv-x3'
 import { createBehavior, createResource } from '@designable/core'
 import { DnFC } from '@form-designer/prototypes'
 import { createFieldSchema } from '../Field'
 import { AllSchemas } from '../../schemas'
 import { AllLocales } from '../../locales'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import { merge } from '@formily/shared'
 
 export const Input: DnFC<any> =

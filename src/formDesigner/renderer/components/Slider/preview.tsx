@@ -1,12 +1,12 @@
 import { Slider as ASlider } from 'ant-design-vue'
-import { composeExport, transformComponent } from '@form-designer/components/__builtins__'
+import { composeExport, transformComponent } from '@formily/antdv-x3/esm/__builtins__'
 import { connect, mapProps, mapReadPretty, VueComponent } from '@formily/vue'
 import { createBehavior, createResource } from '@designable/core'
 import { createFieldSchema } from '../Field'
 
 import { AllSchemas } from '../../schemas'
 import { AllLocales } from '../../locales'
-import { PreviewText } from '@form-designer/components'
+import { PreviewText } from '@formily/antdv-x3'
 
 
 const TransformSlider = transformComponent(ASlider, {

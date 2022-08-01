@@ -18,7 +18,7 @@ import {
   cloneVNode,
   PropType
 } from 'vue-demi'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import { cloneElement, isVNode, useStyle } from '../../shared'
 import { useContext } from '@form-designer/prototypes'
 import cls from 'classnames'

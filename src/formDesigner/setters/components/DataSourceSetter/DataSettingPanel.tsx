@@ -1,5 +1,5 @@
 import { Button } from 'ant-design-vue'
-import { ArrayItems, Form, Input, FormItem, Space } from '@form-designer/components'
+import { ArrayItems, Form, Input, FormItem, Space } from '@formily/antdv-x3'
 import { createForm, Form as FormCore, DataField } from '@formily/core'
 import { observer } from '@formily/reactive-vue'
 import { markRaw, isObservable } from '@formily/reactive'

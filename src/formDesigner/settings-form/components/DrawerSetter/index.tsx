@@ -1,6 +1,6 @@
 import { useField } from '@formily/vue'
 import { observer } from '@formily/reactive-vue'
-import { FormLayout } from '@form-designer/components'
+import { FormLayout } from '@formily/antdv-x3'
 import {
   usePrefix,
   IconWidget,

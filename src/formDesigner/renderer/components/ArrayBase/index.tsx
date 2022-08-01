@@ -2,10 +2,10 @@ import { createBehavior } from '@designable/core'
 import { createFieldSchema, createVoidFieldSchema } from '../Field'
 import { AllSchemas } from '../../schemas'
 import { AllLocales } from '../../locales'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import { Button, } from 'ant-design-vue'
 import { ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined } from '@ant-design/icons-vue'
-import { ArrayBase as FArrayBase } from '@form-designer/components'
+import { ArrayBase as FArrayBase } from '@formily/antdv-x3'
 export const createArrayBehavior = (name: string) => {
   return createBehavior(
     {

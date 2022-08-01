@@ -1,6 +1,6 @@
 import { useField, Field, FragmentComponent, VueComponent } from '@formily/vue'
 import { observer } from '@formily/reactive-vue'
-import { FormItem } from '@form-designer/components'
+import { FormItem } from '@formily/antdv-x3'
 import { RadioButton as RadioButton, RadioGroup as RadioGroup } from 'ant-design-vue'
 import { usePrefix, IconWidget, useStyle } from '@form-designer/prototypes'
 import { FlexStyleSetter } from '../FlexStyleSetter'

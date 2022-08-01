@@ -10,7 +10,7 @@ import { CursorStatus, ClosestPosition } from '@designable/core'
 import cls from 'classnames'
 import { defineComponent, toRef } from 'vue-demi'
 import { FragmentComponent as Fragment } from '@formily/vue'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import { isNum } from '@designable/shared'
 
 // interface ICoverRectProps {

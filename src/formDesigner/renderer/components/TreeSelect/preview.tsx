@@ -1,10 +1,10 @@
-import { TreeSelect as FTreeSelect } from '@form-designer/components'
+import { TreeSelect as FTreeSelect } from '@formily/antdv-x3'
 import { createBehavior, createResource } from '@designable/core'
 import { DnFC } from '@form-designer/prototypes'
 import { createFieldSchema } from '../Field'
 import { AllSchemas } from '../../schemas'
 import { AllLocales } from '../../locales'
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/antdv-x3/esm/__builtins__'
 import { DefineComponent } from 'vue'
 
 export const TreeSelect: DnFC<DefineComponent<any>> =
