@@ -1,31 +1,50 @@
+import { Button } from 'ant-design-vue'
+import { stylePrefix } from '../__builtins__/configs'
+import { FragmentComponent, useField, useFieldSchema } from '@formily/vue'
+import { isValid, clone, uid } from '@formily/shared'
+import type { ArrayField } from '@formily/core'
+import type { ButtonProps } from 'ant-design-vue/lib/button'
+import type { Schema } from '@formily/json-schema'
+import type { Ref, InjectionKey } from 'vue'
+import {
+  MenuOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  DownOutlined,
+  UpOutlined,
+} from '@ant-design/icons-vue'
 import {
   defineComponent,
   provide,
-  InjectionKey,
-  Ref,
   inject,
   toRefs,
   ref,
   onBeforeUnmount,
-  PropType,
+  withDirectives,
   h,
 } from 'vue'
-import { FragmentComponent, useField, useFieldSchema } from '@formily/vue'
-import { isValid, uid, clone } from '@formily/shared'
-import { ArrayField } from '@formily/core'
-import type { ButtonProps as AntButtonProps } from 'ant-design-vue'
-import { Button as AntButton } from 'ant-design-vue'
-import type { Schema } from '@formily/json-schema'
-// import { HandleDirective } from 'vue-slicksort'
-import { DeleteOutlined, UpOutlined, DownOutlined, DragOutlined } from '@ant-design/icons-vue'
-
-import { stylePrefix } from '../__builtins__/configs'
+import { HandleDirective } from 'vue-slicksort'
 import { composeExport } from '../__builtins__/shared'
 
-export interface IArrayBaseAdditionProps extends AntButtonProps {
+export type KeyMapProps =
+  | WeakMap<Record<string, unknown>, string>
+  | string[]
+  | null
+
+export interface IArrayBaseAdditionProps extends ButtonProps {
   title?: string
   method?: 'push' | 'unshift'
   defaultValue?: any
+}
+
+export interface IArrayBaseItemProps {
+  index: number
+  record: any
+}
+
+export type ArrayBaseRemoveProps = ButtonProps & {
+  title?: string
+  index?: number
 }
 
 export type ArrayBaseMixins = {
@@ -42,22 +61,21 @@ export type ArrayBaseMixins = {
 
 export interface IArrayBaseProps {
   disabled?: boolean
-  keyMap?: WeakMap<Record<string, unknown>, string> | string[] | null
-}
-
-export interface IArrayBaseItemProps {
-  index: number
-  record: any
+  onAdd?: (index: number) => void
+  onRemove?: (index: number) => void
+  onMoveDown?: (index: number) => void
+  onMoveUp?: (index: number) => void
+  keyMap?: KeyMapProps
 }
 
 export interface IArrayBaseContext {
+  props: IArrayBaseProps
   field: Ref<ArrayField>
   schema: Ref<Schema>
-  props: IArrayBaseProps
   attrs: {
     [key in string]?: any
   }
-  keyMap?: WeakMap<Record<string, unknown>, string> | string[] | null
+  keyMap?: KeyMapProps
 }
 
 const ArrayBaseSymbol: InjectionKey<IArrayBaseContext> =
@@ -69,18 +87,16 @@ const useArray = () => {
 }
 
 const useIndex = (index?: number) => {
-  const { index: indexRef } = toRefs(inject(ItemSymbol) as IArrayBaseItemProps)
+  const { index: indexRef } = toRefs(inject(ItemSymbol))
   return indexRef ?? ref(index)
 }
 
 const useRecord = (record?: number) => {
-  const { record: recordRef } = toRefs(
-    inject(ItemSymbol) as IArrayBaseItemProps
-  )
+  const { record: recordRef } = toRefs(inject(ItemSymbol))
   return recordRef ?? ref(record)
 }
 
-const isObjectValue: (schema: Schema) => boolean = (schema: Schema) => {
+const isObjectValue = (schema: Schema) => {
   if (Array.isArray(schema?.items)) return isObjectValue(schema.items[0])
 
   if (schema?.items?.type === 'array' || schema?.items?.type === 'object') {
@@ -91,7 +107,7 @@ const isObjectValue: (schema: Schema) => boolean = (schema: Schema) => {
 
 const useKey = (schema: Schema) => {
   const isObject = isObjectValue(schema)
-  let keyMap: WeakMap<Record<string, unknown>, string> | string[] | null = null
+  let keyMap: KeyMapProps = null
 
   if (isObject) {
     keyMap = new WeakMap()
@@ -105,23 +121,25 @@ const useKey = (schema: Schema) => {
 
   return {
     keyMap,
-    getKey: (record: any, index: number) => {
+    getKey: (record: any, index?: number) => {
       if (keyMap instanceof WeakMap) {
         if (!keyMap.has(record)) {
+          console.log('record--:', record)
           keyMap.set(record, uid())
         }
         return `${keyMap.get(record)}-${index}`
       }
 
-      if (keyMap && !keyMap[index]) {
+      if (!keyMap[index]) {
         keyMap[index] = uid()
       }
-      return keyMap ? `${keyMap[index]}-${index}` : undefined
+
+      return `${keyMap[index]}-${index}`
     },
   }
 }
 
-const getDefaultValue = (defaultValue: any, schema: Schema): any => {
+const getDefaultValue = (defaultValue: any, schema: Schema) => {
   if (isValid(defaultValue)) return clone(defaultValue)
   if (Array.isArray(schema?.items))
     return getDefaultValue(defaultValue, schema.items[0])
@@ -137,21 +155,11 @@ const getDefaultValue = (defaultValue: any, schema: Schema): any => {
 
 const ArrayBaseInner = defineComponent({
   name: 'ArrayBase',
-  props: {
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-    keyMap: {
-      type: [WeakMap, Array] as PropType<
-        WeakMap<Record<string, unknown>, string> | string[]
-      >,
-    },
-  },
-  setup(props, { slots, attrs }) {
+  inheritAttrs: false,
+  props: ['disabled', 'keyMap'],
+  setup(props: IArrayBaseProps, { slots, attrs }) {
     const field = useField<ArrayField>()
     const schema = useFieldSchema()
-
     provide(ArrayBaseSymbol, {
       field,
       schema,
@@ -167,6 +175,7 @@ const ArrayBaseInner = defineComponent({
 
 const ArrayBaseItem = defineComponent({
   name: 'ArrayBaseItem',
+  inheritAttrs: false,
   props: ['index', 'record'],
   setup(props: IArrayBaseItemProps, { slots }) {
     provide(ItemSymbol, props)
@@ -187,19 +196,12 @@ const ArrayBaseSortHandle = defineComponent({
       if (!array) return null
       if (array.field.value?.pattern !== 'editable') return null
 
-      return h(
-        AntButton,
-        {
-          directives: [{ name: 'handle' }],
-          size: 'small',
-          text: true,
-          // icon: Rank,
+      return withDirectives(
+        h(MenuOutlined, {
           ...attrs,
-          class: [`${prefixCls}-sort-handle`].concat(attrs.class as any),
-        },
-        {
-          icon: () => DragOutlined,
-        }
+          class: [`${prefixCls}-sort-handle`],
+        }),
+        [[HandleDirective]]
       )
     }
   },
@@ -214,8 +216,8 @@ const ArrayBaseIndex = defineComponent({
       return h(
         'span',
         {
+          attrs,
           class: `${prefixCls}-index`,
-          ...attrs,
         },
         {
           default: () => [`#${index.value + 1}.`],
@@ -227,21 +229,27 @@ const ArrayBaseIndex = defineComponent({
 
 const ArrayBaseAddition = defineComponent({
   name: 'ArrayBaseAddition',
-  props: ['method', 'defaultValue', 'title'],
-  setup(props, { attrs }) {
+  props: ['title', 'method', 'defaultValue'],
+  setup(props: IArrayBaseAdditionProps, { attrs }) {
     const self = useField()
     const array = useArray()
     const prefixCls = `${stylePrefix}-array-base`
     return () => {
       if (!array) return null
-      if (array?.field.value.pattern !== 'editable') return null
+      if (
+        array?.field.value.pattern !== 'editable' &&
+        array?.field.value.pattern !== 'disabled'
+      )
+        return null
       return h(
-        AntButton,
+        Button,
         {
           ...attrs,
           ...props,
           class: `${prefixCls}-addition`,
-          icon: 'qax-icon-Alone-Plus',
+          type: 'dashed',
+          block: true,
+          disabled: array.field.value?.disabled,
           onClick: (e) => {
             if (array.props?.disabled) return
             const defaultValue = getDefaultValue(
@@ -261,142 +269,111 @@ const ArrayBaseAddition = defineComponent({
           },
         },
         {
-          default: () => [self.value.title || props.title],
+          default: () => [h(PlusOutlined), self.value.title || props.title],
         }
       )
     }
   },
 })
 
-const ArrayBaseRemove = defineComponent<
-  AntButtonProps & { title?: string; index?: number }
->({
+const ArrayBaseRemove = defineComponent({
   name: 'ArrayBaseRemove',
+  // props: ['title', 'index'],
+  props: {
+    title: String,
+    index: Number,
+  },
   setup(props, { attrs }) {
     const indexRef = useIndex(props.index)
     const base = useArray()
     const prefixCls = `${stylePrefix}-array-base`
     return () => {
       if (base?.field.value.pattern !== 'editable') return null
-      return h(
-        AntButton,
-        {
-          class: `${prefixCls}-remove`,
-          text: true,
-          size: 'small',
-          // icon: DeleteOutlined,
-          ...attrs,
-          onClick: (e: MouseEvent) => {
-            e.stopPropagation()
-            if (Array.isArray(base?.keyMap)) {
-              base?.keyMap?.splice(indexRef.value, 1)
-            }
+      return h(DeleteOutlined, {
+        class: `${prefixCls}-remove`,
+        attrs,
+        onClick: (e: MouseEvent) => {
+          e.stopPropagation()
+          if (Array.isArray(base?.keyMap)) {
+            base?.keyMap?.splice(indexRef.value, 1)
+          }
 
-            base?.field.value.remove(indexRef.value as number)
-            base?.attrs?.remove?.(indexRef.value as number)
+          base?.field.value.remove(indexRef.value as number)
+          base?.attrs?.remove?.(indexRef.value as number)
 
-            if (typeof attrs.onClick === 'function') {
-              attrs.onClick(e)
-            }
-          },
+          if (typeof attrs.onClick === 'function') {
+            attrs.onClick(e)
+          }
         },
-        {
-          default: () => [props.title],
-          icon: () => {
-            return h(DeleteOutlined)
-          },
-        }
-      )
+      })
     }
   },
 })
 
-const ArrayBaseMoveDown = defineComponent<
-  AntButtonProps & { title?: string; index?: number }
->({
+const ArrayBaseMoveDown = defineComponent({
   name: 'ArrayBaseMoveDown',
+  props: ['title', 'index'],
   setup(props, { attrs }) {
     const indexRef = useIndex(props.index)
     const base = useArray()
     const prefixCls = `${stylePrefix}-array-base`
     return () => {
       if (base?.field.value.pattern !== 'editable') return null
-      return h(
-        AntButton,
-        {
-          class: `${prefixCls}-move-down`,
-          size: 'small',
-          text: true,
-          // icon: ArrowDown,
-          ...attrs,
-          onClick: (e: MouseEvent) => {
-            e.stopPropagation()
-            if (Array.isArray(base?.keyMap)) {
-              base.keyMap.splice(
-                indexRef.value + 1,
-                0,
-                base.keyMap.splice(indexRef.value, 1)[0]
-              )
-            }
+      return h(DownOutlined, {
+        class: `${prefixCls}-move-down`,
+        attrs,
+        onClick: (e: MouseEvent) => {
+          e.stopPropagation()
+          if (Array.isArray(base?.keyMap)) {
+            base.keyMap.splice(
+              indexRef.value + 1,
+              0,
+              base.keyMap.splice(indexRef.value, 1)[0]
+            )
+          }
 
-            base?.field.value.moveDown(indexRef.value as number)
-            base?.attrs?.moveDown?.(indexRef.value as number)
+          base?.field.value.moveDown(indexRef.value as number)
+          base?.attrs?.moveDown?.(indexRef.value as number)
 
-            if (typeof attrs.onClick === 'function') {
-              attrs.onClick(e)
-            }
-          },
+          if (typeof attrs.onClick === 'function') {
+            attrs.onClick(e)
+          }
         },
-        {
-          default: () => [props.title],
-          icon: () => DownOutlined,
-        }
-      )
+      })
     }
   },
 })
 
-const ArrayBaseMoveUp = defineComponent<
-  AntButtonProps & { title?: string; index?: number }
->({
+const ArrayBaseMoveUp = defineComponent({
   name: 'ArrayBaseMoveUp',
+  props: ['title', 'index'],
   setup(props, { attrs }) {
     const indexRef = useIndex(props.index)
     const base = useArray()
     const prefixCls = `${stylePrefix}-array-base`
     return () => {
       if (base?.field.value.pattern !== 'editable') return null
-      return h(
-        AntButton,
-        {
-          class: `${prefixCls}-move-up`,
-          size: 'small',
-          text: true,
-          // icon: UpOutlined,
-          ...attrs,
-          onClick: (e: MouseEvent) => {
-            e.stopPropagation()
-            if (Array.isArray(base?.keyMap)) {
-              base.keyMap.splice(
-                indexRef.value - 1,
-                0,
-                base.keyMap.splice(indexRef.value, 1)[0]
-              )
-            }
+      return h(UpOutlined, {
+        class: `${prefixCls}-move-up`,
+        attrs,
+        onClick: (e: MouseEvent) => {
+          e.stopPropagation()
+          if (Array.isArray(base?.keyMap)) {
+            base.keyMap.splice(
+              indexRef.value - 1,
+              0,
+              base.keyMap.splice(indexRef.value, 1)[0]
+            )
+          }
 
-            base?.field.value.moveUp(indexRef.value as number)
-            base?.attrs?.moveUp?.(indexRef.value as number)
+          base?.field.value.moveUp(indexRef.value as number)
+          base?.attrs?.moveUp?.(indexRef.value as number)
 
-            if (typeof attrs.onClick === 'function') {
-              attrs.onClick(e)
-            }
-          },
+          if (typeof attrs.onClick === 'function') {
+            attrs.onClick(e)
+          }
         },
-        {
-          default: () => [props.title],
-          icon: () => UpOutlined,
-        }
-      )
+      })
     }
   },
 })
@@ -414,3 +391,5 @@ export const ArrayBase = composeExport(ArrayBaseInner, {
   useKey: useKey,
   useRecord: useRecord,
 })
+
+export default ArrayBase

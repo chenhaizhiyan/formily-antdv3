@@ -1,11 +1,14 @@
-import { connect, mapProps, h } from '@formily/vue'
-import { Upload as AntdUpload } from 'ant-design-vue'
+import { connect, mapProps } from '@formily/vue'
+import {
+  Upload as AntdUpload,
+  UploadDragger as AntdUploadDrager,
+} from 'ant-design-vue'
 import { composeExport } from '../__builtins__'
 import type {
   UploadFile,
-  Upload as AntdUploadProps,
-} from 'ant-design-vue/types/upload'
-import { defineComponent } from 'vue'
+  UploadProps as AntdUploadProps,
+} from 'ant-design-vue/lib/upload'
+import { defineComponent, h } from 'vue'
 
 export type IUploadOnchange = (fileList: UploadFile[]) => void
 
@@ -19,22 +22,20 @@ export type IDraggerUploadProps = Omit<AntdUploadProps, 'onChange'> & {
 
 const UploadWrapper = defineComponent<IUploadProps>({
   name: 'UploadWrapper',
-  setup(props, { slots, attrs, listeners, emit }) {
+  emits: ['change'],
+  setup(props, { slots, attrs, emit }) {
     return () => {
       const children = {
         ...slots,
       }
-
+      const { onChange, ...restAttrs } = attrs
       return h(
         AntdUpload,
         {
-          attrs,
-          on: {
-            ...listeners,
-            change: ({ fileList }) => {
-              ;(attrs.onChange as IUploadOnchange)?.(fileList)
-              emit('change', fileList)
-            },
+          ...restAttrs,
+          onChange: ({ fileList }) => {
+            ;(onChange as IUploadOnchange)?.(fileList)
+            emit('change', fileList)
           },
         },
         children
@@ -45,32 +46,24 @@ const UploadWrapper = defineComponent<IUploadProps>({
 
 const UploaDraggerdWrapper = defineComponent<IUploadProps>({
   name: 'UploaDraggerdWrapper',
-  setup(props, { slots, attrs, listeners, emit }) {
+  emits: ['change'],
+  setup(props, { slots, attrs, emit }) {
     return () => {
       const children = {
         ...slots,
       }
+      const { onChange, ...restAttrs } = attrs
 
       return h(
-        'div',
-        {},
+        AntdUploadDrager,
         {
-          default: () =>
-            h(
-              AntdUpload.Dragger,
-              {
-                attrs,
-                on: {
-                  ...listeners,
-                  change: ({ fileList }) => {
-                    ;(attrs.onChange as IUploadOnchange)?.(fileList)
-                    emit('change', fileList)
-                  },
-                },
-              },
-              children
-            ),
-        }
+          ...restAttrs,
+          onChange: ({ fileList }) => {
+            ;(onChange as IUploadOnchange)?.(fileList)
+            emit('change', fileList)
+          },
+        },
+        children
       )
     }
   },

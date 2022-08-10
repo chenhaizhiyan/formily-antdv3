@@ -1,15 +1,15 @@
 import type { IFieldResetOptions } from '@formily/core'
-import { h, useParentForm } from '@formily/vue'
+import { useParentForm } from '@formily/vue'
 import { observer } from '@formily/reactive-vue'
-import { defineComponent } from 'vue'
+import { defineComponent, h } from 'vue'
 
-import type { Button as IAntButton } from 'ant-design-vue'
+import type { ButtonProps as AntButtonProps } from 'ant-design-vue/lib/button'
 import { Button as AntButton } from 'ant-design-vue'
 
-export type ResetProps = IFieldResetOptions & IAntButton
+export type ResetProps = IFieldResetOptions & AntButtonProps
 
 export const Reset = observer(
-  defineComponent<ResetProps>({
+  defineComponent({
     name: 'Reset',
     props: {
       forceClear: {
@@ -21,29 +21,25 @@ export const Reset = observer(
         default: false,
       },
     },
-    setup(props, context) {
+    setup(props, { attrs, slots }) {
       const formRef = useParentForm()
-      const { listeners, slots } = context
       return () => {
         const form = formRef?.value
         return h(
           AntButton,
           {
-            attrs: context.attrs,
-            on: {
-              ...listeners,
-              click: (e: any) => {
-                if (listeners?.click) {
-                  if (listeners.click(e) === false) return
-                }
-                form
-                  ?.reset('*', {
-                    forceClear: props.forceClear,
-                    validate: props.validate,
-                  })
-                  .then(listeners.resetValidateSuccess as (e: any) => void)
-                  .catch(listeners.resetValidateFailed as (e: any) => void)
-              },
+            attrs,
+            onClick: (e: any) => {
+              if (props?.onClick) {
+                if (props.onClick(e) === false) return
+              }
+              form
+                ?.reset('*', {
+                  forceClear: props.forceClear,
+                  validate: props.validate,
+                })
+                .then(attrs.resetValidateSuccess as (e: any) => void)
+                .catch(attrs.resetValidateFailed as (e: any) => void)
             },
           },
           slots

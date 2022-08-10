@@ -1,5 +1,5 @@
 import { observer } from '@formily/reactive-vue'
-import { Tabs as Tabs, TabPane as TabPane } from 'ant-design-vue'
+import { ElTabs as Tabs, ElTabPane as TabPane } from 'element-plus'
 import { TreeNode, createBehavior, createResource } from '@designable/core'
 import {
   useNodeIdProps,
@@ -8,7 +8,7 @@ import {
   DroppableWidget,
   DnFC,
   useSelection,
-} from '@form-designer/prototypes'
+} from '@formily/element-plus-prototypes'
 import { LoadTemplate } from '../../common/LoadTemplate'
 import { useDropTemplate } from '../../hooks'
 import { createVoidFieldSchema } from '../Field'
@@ -16,7 +16,7 @@ import { AllSchemas } from '../../schemas'
 import { AllLocales } from '../../locales'
 import { matchComponent } from '../../shared'
 
-import { composeExport } from '@form-designer/components/__builtins__'
+import { composeExport } from '@formily/element-plus/src/__builtins__'
 import type { VueComponent } from '@formily/vue'
 import { DefineComponent, defineComponent, nextTick, ref } from 'vue-demi'
 
@@ -79,7 +79,7 @@ export const FormTab: DnFC<DefineComponent<any>> = composeExport(
               <Tabs
                 {...{
                   ...attrs,
-                  activeKey: getCorrectActiveKey(activeKey!, tabs),
+                  modelValue: getCorrectActiveKey(activeKey!, tabs),
                   "onUpdate:modelValue": (id: any) => {
                     setActiveKey(id)
                   }
@@ -90,15 +90,14 @@ export const FormTab: DnFC<DefineComponent<any>> = composeExport(
                   const nodeId = {
                     [designer.props.nodeIdAttrName]: tab.id,
                   }
-                  console.log('tab:', tab)
                   return (
                     <TabPane
                       {...nodeId}
                       style={props.style}
-                      // name={tab.id}
+                      name={tab.id}
                       key={tab.id}
                       v-slots={{
-                        tab: () => {
+                        label: () => {
                           return (
                             <span
                               data-content-editable="x-component-props.label"

@@ -1,20 +1,10 @@
-import { transformComponent } from '../__builtins__/shared'
 import { connect, mapProps, mapReadPretty } from '@formily/vue'
-import { PreviewText } from '../preview-text'
 import { TimePicker as AntdTimePicker } from 'ant-design-vue'
-
-export type TimePickerProps = typeof AntdTimePicker
-
-const TransformElTimePicker = transformComponent<TimePickerProps>(
-  AntdTimePicker,
-  {
-    change: 'update:modelValue',
-  }
-)
+import { PreviewText } from '../preview-text'
 
 export const TimePicker = connect(
-  TransformElTimePicker,
-  mapProps({ readOnly: 'readonly', value: 'modelValue' }),
+  AntdTimePicker,
+  mapProps({ readOnly: 'read-only' }),
   mapReadPretty(PreviewText.TimePicker)
 )
 

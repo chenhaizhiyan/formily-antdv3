@@ -1,6 +1,5 @@
-import { h } from '@formily/vue'
-import { defineComponent } from 'vue'
-import type { Space as SpaceProps } from 'ant-design-vue/types/space'
+import { defineComponent, h } from 'vue'
+import type { SpaceProps } from 'ant-design-vue/lib/space'
 import { Space } from '../space'
 import { FormBaseItem } from '../form-item'
 import { stylePrefix } from '../__builtins__/configs'
@@ -12,7 +11,7 @@ export type FormButtonGroupProps = Omit<SpaceProps, 'align' | 'size'> & {
   alignFormItem: boolean
 }
 
-export const FormButtonGroup = defineComponent<FormButtonGroupProps>({
+export const FormButtonGroup = defineComponent({
   name: 'FormButtonGroup',
   props: {
     align: {
@@ -35,25 +34,24 @@ export const FormButtonGroup = defineComponent<FormButtonGroupProps>({
         return h(
           FormBaseItem,
           {
+            ...attrs,
             style: {
               margin: 0,
               padding: 0,
               width: '100%',
             },
-            attrs: {
-              colon: false,
-              label: ' ',
-              ...attrs,
-            },
+            colon: false,
+            label: ' ',
           },
           {
-            default: () => h(Space, { props: { size: props.gutter } }, slots),
+            default: () => h(Space, { size: props.gutter }, slots),
           }
         )
       } else {
         return h(
           Space,
           {
+            ...attrs,
             class: [prefixCls],
             style: {
               justifyContent:
@@ -64,11 +62,7 @@ export const FormButtonGroup = defineComponent<FormButtonGroupProps>({
                   : 'center',
               display: 'flex',
             },
-            props: {
-              ...attrs,
-              size: props.gutter,
-            },
-            attrs,
+            size: props.gutter,
           },
           slots
         )

@@ -1,4 +1,4 @@
-import type { Component } from 'vue'
+import type { DefineComponent } from 'vue'
 import { h, toRaw } from 'vue'
 import type { SlotTypes } from '.'
 import { isVnode } from './utils'
@@ -16,7 +16,7 @@ export const resolveComponent = (
     } else if (isVnode(child)) {
       return child
     } else {
-      return h(toRaw(child as Component), { props })
+      return h(toRaw(child as DefineComponent), { props })
     }
   }
 

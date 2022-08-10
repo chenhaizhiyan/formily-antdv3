@@ -1,6 +1,7 @@
 import { isArr, isValid } from '@formily/shared'
-import { onMounted, Ref, ref, getCurrentInstance } from 'vue'
-import type, { ComponentInternalInstance } from 'vue'
+import type { ComponentInternalInstance, Ref } from 'vue'
+import { getCurrentInstance } from 'vue'
+import { onMounted, ref } from 'vue'
 
 interface IProps {
   breakpoints?: number[]
@@ -30,13 +31,17 @@ interface IUseResponsiveFormLayout {
   }
 }
 
+const useRefs = (): Record<string, unknown> => {
+  const vm: ComponentInternalInstance | null = getCurrentInstance()
+  return vm?.refs || {}
+}
+
 const calcBreakpointIndex: ICalcBreakpointIndex = (breakpoints, width) => {
   for (let i = 0; i < breakpoints.length; i++) {
     if (width <= breakpoints[i]) {
       return i
     }
   }
-  return -1
 }
 
 const calcFactor = <T>(value: T | T[], breakpointIndex: number): T => {
@@ -62,10 +67,7 @@ const calculateProps: ICalculateProps = (target, props) => {
     wrapperCol,
     ...otherProps
   } = props
-  const breakpointIndex = calcBreakpointIndex(
-    breakpoints as number[],
-    clientWidth
-  )
+  const breakpointIndex = calcBreakpointIndex(breakpoints, clientWidth)
 
   return {
     layout: factor(layout, breakpointIndex),
@@ -77,35 +79,28 @@ const calculateProps: ICalculateProps = (target, props) => {
   }
 }
 
-const useRefs = (): Record<string, unknown> => {
-  const vm: ComponentInternalInstance | null = getCurrentInstance()
-  return vm?.refs || {}
-}
-
-export const useResponsiveFormLayout = (props: any) => {
+export const useResponsiveFormLayout: IUseResponsiveFormLayout = (props) => {
   const { breakpoints } = props
   if (!isArr(breakpoints)) {
-    return {
-      props: ref(props),
-    }
+    return { props: ref(props) }
   }
   const layoutProps = ref<IProps>({})
 
-  const updateUI = (target: HTMLElement) => {
+  const updateUI = (target) => {
     layoutProps.value = calculateProps(target, props)
   }
 
   onMounted(() => {
     const { root } = useRefs()
     const observer = () => {
-      updateUI(root as HTMLElement)
+      updateUI(root)
     }
     const resizeObserver = new ResizeObserver(observer)
     if (root) {
       resizeObserver.observe(root as Element)
     }
 
-    updateUI(root as HTMLElement)
+    updateUI(root)
 
     return () => {
       resizeObserver.disconnect()

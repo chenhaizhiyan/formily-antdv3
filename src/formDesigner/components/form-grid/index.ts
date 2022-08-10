@@ -1,22 +1,22 @@
+import type { InjectionKey, Ref } from 'vue'
 import {
   defineComponent,
   provide,
+  ref,
   onMounted,
-  InjectionKey,
-  Ref,
   computed,
   watchEffect,
-  inject,
-  PropType,
-  getCurrentInstance,
-  ComponentInternalInstance,
+  h,
 } from 'vue'
-import { h } from '@formily/vue'
 import { observer } from '@formily/reactive-vue'
 import { markRaw } from '@formily/reactive'
-import { Grid, IGridOptions } from '@formily/grid'
-import { stylePrefix, composeExport } from '../__builtins__'
+import type { IGridOptions } from '@formily/grid'
+import { Grid } from '@formily/grid'
+import { stylePrefix } from '../__builtins__/configs'
+import { composeExport } from '../__builtins__/shared'
 import { useFormLayout } from '../form-layout'
+import { inject } from 'vue'
+import type { PropType } from 'vue'
 
 export interface IFormGridProps extends IGridOptions {
   grid?: Grid<HTMLElement>
@@ -47,18 +47,14 @@ const useGridSpan = (gridSpan: number) => {
 /**
  * @deprecated
  */
-export const useGridColumn = (gridSpan = 'span 1') => {
+export const useGridColumn = (gridSpan = 1) => {
   return gridSpan
 }
 
-const useRefs = (): Record<string, unknown> => {
-  const vm: ComponentInternalInstance | null = getCurrentInstance()
-  return vm?.refs || {}
-}
-
 const FormGridInner = observer(
+  // eslint-disable-next-line vue/one-component-per-file
   defineComponent({
-    name: 'FFormGrid',
+    name: 'FormGrid',
     props: {
       columnGap: {
         type: Number,
@@ -99,7 +95,7 @@ const FormGridInner = observer(
         type: Object as PropType<Grid<HTMLElement>>,
       },
     },
-    setup(props: any, { slots }) {
+    setup(props, { slots }) {
       const layout = useFormLayout()
 
       const gridInstance = computed(() => {
@@ -117,13 +113,13 @@ const FormGridInner = observer(
         return markRaw(options?.grid ? options.grid : new Grid(options))
       })
       const prefixCls = `${stylePrefix}-form-grid`
+      const root = ref(null)
 
       provide(FormGridSymbol, gridInstance)
 
       onMounted(() => {
-        const refs = useRefs()
         watchEffect((onInvalidate) => {
-          const dispose = gridInstance.value.connect(refs.root as HTMLElement)
+          const dispose = gridInstance.value.connect(root.value)
           onInvalidate(() => {
             dispose()
           })
@@ -139,18 +135,19 @@ const FormGridInner = observer(
               gridTemplateColumns: gridInstance.value.templateColumns,
               gap: gridInstance.value.gap,
             },
-            ref: 'root',
+            ref: root,
           },
           slots
         )
       }
     },
   })
-) as any
+)
 
 const FormGridColumn = observer(
+  // eslint-disable-next-line vue/one-component-per-file
   defineComponent({
-    name: 'FFormGridColumn',
+    name: 'FormGridColumn',
     props: {
       gridSpan: {
         type: Number,

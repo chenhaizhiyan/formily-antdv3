@@ -1,17 +1,15 @@
 import { Button, Drawer, Space } from 'ant-design-vue'
-import type { Drawer as DrawerProps } from 'ant-design-vue/types/drawer'
-import { FormProvider, h, Fragment } from '@formily/vue'
+import type { DrawerProps } from 'ant-design-vue/lib/drawer'
+import { FormProvider, FragmentComponent } from '@formily/vue'
 import { observer } from '@formily/reactive-vue'
 import type { IMiddleware } from '@formily/shared'
 import { isNum, isStr, isBool, isFn, applyMiddleware } from '@formily/shared'
 import { toJS } from '@formily/reactive'
 import type { Form, IFormProps } from '@formily/core'
 import { createForm } from '@formily/core'
-import { Component, Teleport, VNode ,createApp} from 'vue'
-// import Vue from 'vue'
+import type { Component, VNode } from 'vue'
+import { h, defineComponent, Teleport, createApp } from 'vue'
 import { stylePrefix } from '../__builtins__/configs'
-import { defineComponent } from 'vue'
-// import { Portal, PortalTarget } from 'portal-vue'
 
 import {
   isValidElement,
@@ -89,6 +87,7 @@ export function FormDrawer(
     root: document.createElement('div'),
     form: null,
     promise: null,
+    app: null,
     instance: null,
     openMiddlewares: [],
     confirmMiddlewares: [],
@@ -103,16 +102,9 @@ export function FormDrawer(
     width: '40%',
     onClose: () => {
       props.onClose?.()
-      // env.instance.$destroy()
-      // env.instance = null
-      // env.root?.parentNode?.removeChild(env.root)
-      // env.root = undefined
-    },
-    afterVisibleChange: (visible: boolean) => {
-      props?.afterVisibleChange?.(visible)
-      if (visible) return
-      env.instance.$destroy()
+      env.app?.unmount()
       env.instance = null
+      env.app = null
       env.root?.parentNode?.removeChild(env.root)
       env.root = undefined
     },
@@ -123,7 +115,7 @@ export function FormDrawer(
       setup() {
         return () =>
           h(
-            Fragment,
+            FragmentComponent,
             {},
             {
               default: () => resolveComponent(renderer, { form: env.form }),
@@ -139,163 +131,140 @@ export function FormDrawer(
     reject?: () => any
   ) => {
     if (!env.instance) {
-      const ComponentConstructor = observer(
-        createApp({
-          props: ['drawerProps'],
-          data() {
-            return {
-              visible: false,
-            }
-          },
-          render() {
-            const {
-              onOk,
-              onClose,
-              title,
-              footer,
-              okText = '确定',
-              okType = 'primary',
-              okButtonProps,
-              cancelButtonProps,
-              cancelText = '取消',
-              ...drawerProps
-            } = this.drawerProps
-            return h(
-              Drawer,
-              {
-                class: prefixCls,
-                props: {
-                  ...drawerProps,
-                  visible: this.visible,
-                },
-                on: {
-                  'update:visible': (val) => {
-                    this.visible = val
-                  },
-                  close: (e) => {
-                    if (onClose?.(e) !== false) {
-                      reject?.()
-                    }
-                  },
-                  ok: (e) => {
-                    if (onOk?.(e) !== false) {
-                      resolve?.()
-                    }
-                  },
-                },
-              },
-              {
-                default: () =>
-                  h(
-                    FormProvider,
-                    {
-                      props: {
-                        form: env.form,
-                      },
-                    },
-                    {
-                      default: () => [
-                        h(
-                          'div',
-                          {
-                            class: [`${prefixCls}-body`],
-                          },
-                          {
-                            default: () => h(DrawerContent, {}, {}),
-                          }
-                        ),
-                        h(
-                          'div',
-                          {
-                            class: [`${prefixCls}-footer`],
-                          },
-                          {
-                            default: () =>
-                              h(
-                                Space,
-                                {},
-                                {
-                                  default: () => {
-                                    const FooterProtalTarget = h(
-                                      // PortalTarget,
-                                      'span',
-                                      {
-                                        props: {
-                                          name: PORTAL_TARGET_NAME,
-                                          slim: true,
-                                        },
-                                      },
-                                      {}
-                                    )
-                                    if (footer === null) {
-                                      return [null, FooterProtalTarget]
-                                    } else if (footer) {
-                                      return [
-                                        resolveComponent(footer),
-                                        FooterProtalTarget,
-                                      ]
-                                    }
-                                    return [
-                                      h(
-                                        Button,
-                                        {
-                                          attrs: cancelButtonProps,
-                                          on: {
-                                            click: (e) => {
-                                              onClose?.(e)
-                                              reject()
-                                            },
-                                          },
-                                        },
-                                        {
-                                          default: () =>
-                                            resolveComponent(cancelText),
-                                        }
-                                      ),
-                                      h(
-                                        Button,
-                                        {
-                                          attrs: {
-                                            ...okButtonProps,
-                                            type: okType,
-                                            loading: env.form.submitting,
-                                          },
-                                          on: {
-                                            click: (e) => {
-                                              onOk?.(e)
-                                              resolve()
-                                            },
-                                          },
-                                        },
-                                        {
-                                          default: () =>
-                                            resolveComponent(okText),
-                                        }
-                                      ),
-                                      FooterProtalTarget,
-                                    ]
-                                  },
-                                }
-                              ),
-                          }
-                        ),
-                      ],
-                    }
-                  ),
-                title: () =>
-                  h(Fragment, {}, { default: () => resolveComponent(title) }),
-              }
-            )
-          },
-        })
-      )
-      env.instance = new ComponentConstructor({
-        propsData: {
-          drawerProps,
+      const ComponentConstructor = defineComponent({
+        props: ['drawerProps'],
+        data() {
+          return {
+            visible: false,
+          }
         },
+        render() {
+          const {
+            onOk,
+            onClose,
+            title,
+            footer,
+            okText = '确定',
+            okType = 'primary',
+            okButtonProps,
+            cancelButtonProps,
+            cancelText = '取消',
+            ...drawerProps
+          } = this.drawerProps
+          return h(
+            Drawer,
+            {
+              class: prefixCls,
+              ...drawerProps,
+              visible: this.visible,
+              'onUpdate:visible': (val) => {
+                this.visible = val
+              },
+              onClose: (e) => {
+                if (onClose?.(e) !== false) {
+                  reject?.()
+                }
+              },
+              onOk: (e) => {
+                if (onOk?.(e) !== false) {
+                  resolve?.()
+                }
+              },
+            },
+            {
+              default: () =>
+                h(
+                  FormProvider,
+                  {
+                    form: env.form,
+                  },
+                  {
+                    default: () => [
+                      h(
+                        'div',
+                        {
+                          class: [`${prefixCls}-body`],
+                        },
+                        h(DrawerContent)
+                      ),
+                      h(
+                        'div',
+                        {
+                          class: [`${prefixCls}-footer`],
+                        },
+                        h(
+                          Space,
+                          {},
+                          {
+                            default: () => {
+                              const FooterProtalTarget = h(
+                                'span',
+                                {
+                                  id: PORTAL_TARGET_NAME,
+                                },
+                                {}
+                              )
+                              if (footer === null) {
+                                return [null, FooterProtalTarget]
+                              } else if (footer) {
+                                return [
+                                  resolveComponent(footer),
+                                  FooterProtalTarget,
+                                ]
+                              }
+                              return [
+                                h(
+                                  Button,
+                                  {
+                                    ...cancelButtonProps,
+                                    onClick: (e) => {
+                                      onClose?.(e)
+                                      reject()
+                                    },
+                                  },
+                                  {
+                                    default: () => resolveComponent(cancelText),
+                                  }
+                                ),
+                                h(
+                                  Button,
+                                  {
+                                    ...okButtonProps,
+                                    type: okType,
+                                    loading: env.form.submitting,
+                                    onClick: (e) => {
+                                      onOk?.(e)
+                                      resolve()
+                                    },
+                                  },
+                                  {
+                                    default: () => resolveComponent(okText),
+                                  }
+                                ),
+                                FooterProtalTarget,
+                              ]
+                            },
+                          }
+                        )
+                      ),
+                    ],
+                  }
+                ),
+              title: () =>
+                h(
+                  FragmentComponent,
+                  {},
+                  { default: () => resolveComponent(title) }
+                ),
+            }
+          )
+        },
+      })
+      env.app = createApp(ComponentConstructor, {
+        drawerProps,
         parent: getProtalContext(id as string | symbol),
       })
-      env.instance.$mount(env.root)
+      env.instance = env.app.mount(env.root)
     }
     env.instance.visible = visible
   }
@@ -361,15 +330,17 @@ const DrawerFooter = defineComponent({
   name: 'DrawerFooter',
   setup(props, { slots }) {
     return () => {
-      return h(
-        Teleport,
-        {
-          props: {
-            to: PORTAL_TARGET_NAME,
+      if (document.querySelector(`#${PORTAL_TARGET_NAME}`)) {
+        return h(
+          Teleport as any,
+          {
+            to: `#${PORTAL_TARGET_NAME}`,
           },
-        },
-        slots
-      )
+          slots
+        )
+      } else {
+        return null
+      }
     }
   },
 })

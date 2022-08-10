@@ -1,10 +1,10 @@
-import { Component, VNode, defineComponent } from 'vue'
-import type { SetupContext } from 'vue'
-import { Form as FormType, IFormFeedback } from '@formily/core'
-import { FormProvider as _FormProvider, useForm, h } from '@formily/vue'
-
+import type { Form as FormType, IFormFeedback } from '@formily/core'
+import { FormProvider as _FormProvider, useForm } from '@formily/vue'
+import { defineComponent, h } from 'vue'
+import type { FormLayoutProps } from '../form-layout'
+import { FormLayout } from '../form-layout'
 import { PreviewText } from '../preview-text'
-import { FormLayout, FormLayoutProps } from '../form-layout'
+import type { Component, VNode, DefineComponent } from 'vue'
 
 const FormProvider = _FormProvider as unknown as Component
 
@@ -25,43 +25,49 @@ export const Form = defineComponent({
     'onAutoSubmit',
     'onAutoSubmitFailed',
   ],
-  setup(props: FormProps, { attrs, slots }: SetupContext) {
+  setup(props: FormProps, { attrs, slots }) {
     const top = useForm()
 
     return () => {
       const {
         form,
         component = 'form',
-        onAutoSubmit = attrs.onAutoSubmit,
-        onAutoSubmitFailed = attrs.autoSubmitFailed,
+        onAutoSubmit = attrs?.autoSubmit,
+        onAutoSubmitFailed = attrs?.autoSubmitFailed,
         previewTextPlaceholder = slots?.previewTextPlaceholder,
       } = props
 
       const renderContent = (form: FormType) => {
         return h(
-          PreviewText.Placeholder,
+          PreviewText.Placeholder as DefineComponent,
           {
             value: previewTextPlaceholder,
           },
           {
             default: () => [
-              h(FormLayout, { attrs }, {
-                default: () => [
-                  h(
-                    component,
-                    {
-                      onSubmit: (e: Event) => {
-                        e?.stopPropagation?.()
-                        e?.preventDefault?.()
-                        form
-                          .submit(onAutoSubmit as (e: any) => void)
-                          .catch(onAutoSubmitFailed as (e: any) => void)
+              h(
+                FormLayout,
+                {
+                  ...attrs,
+                },
+                {
+                  default: () => [
+                    h(
+                      component as DefineComponent,
+                      {
+                        onSubmit: (e: Event) => {
+                          e?.stopPropagation?.()
+                          e?.preventDefault?.()
+                          form
+                            .submit(onAutoSubmit as (e: any) => void)
+                            .catch(onAutoSubmitFailed as (e: any) => void)
+                        },
                       },
-                    },
-                    slots
-                  ),
-                ],
-              }),
+                      slots
+                    ),
+                  ],
+                }
+              ),
             ],
           }
         )
@@ -69,7 +75,7 @@ export const Form = defineComponent({
 
       if (form) {
         return h(
-          FormProvider,
+          FormProvider as DefineComponent,
           { form },
           {
             default: () => renderContent(form),

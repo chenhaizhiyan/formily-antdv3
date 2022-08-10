@@ -1,7 +1,6 @@
 import type { Component } from 'vue'
-import { defineComponent } from 'vue'
-import { merge, each } from '@formily/shared'
-import { h } from '@formily/vue'
+import { merge } from '@formily/shared'
+import { h, defineComponent } from 'vue'
 
 type ListenersTransformRules = Record<string, string>
 
@@ -18,13 +17,14 @@ export const transformComponent = <T extends Record<string, any>>(
         }
         if (transformRules) {
           const listeners = transformRules
-          each(listeners, (event, extract) => {
+          Object.keys(listeners).forEach((extract) => {
+            const event = listeners[extract]
             data[`on${event[0].toUpperCase()}${event.slice(1)}`] =
               attrs[`on${extract[0].toUpperCase()}${extract.slice(1)}`]
           })
         }
         if (defaultProps) {
-          data = merge(defaultProps, attrs)
+          data = merge(defaultProps, data)
         }
         return h(tag, data, slots)
       }

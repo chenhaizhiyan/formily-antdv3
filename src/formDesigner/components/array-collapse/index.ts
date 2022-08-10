@@ -1,21 +1,20 @@
 import type { Ref } from 'vue'
-import { defineComponent, ref, watchEffect } from 'vue'
+import { defineComponent, ref, watchEffect, h } from 'vue'
 import { Badge, Card, Collapse, Empty } from 'ant-design-vue'
 import type { ArrayField } from '@formily/core'
 import {
   RecursionField,
   useField,
   useFieldSchema,
-  h,
-  Fragment,
+  FragmentComponent,
 } from '@formily/vue'
 import { observer } from '@formily/reactive-vue'
 import type { ISchema } from '@formily/json-schema'
 import { stylePrefix } from '../__builtins__/configs'
 import { ArrayBase } from '../array-base'
 import { composeExport } from '../__builtins__/shared'
-import type { Collapse as CollapseProps } from 'ant-design-vue/types/collapse/collapse'
-import type { CollapsePanel as CollapsePanelProps } from 'ant-design-vue/types/collapse/collapse-panel'
+import type { CollapseProps } from 'ant-design-vue/lib/collapse'
+import type { CollapsePanelProps } from 'ant-design-vue/lib/collapse/CollapsePanel'
 import { toArr } from '@formily/shared'
 
 export interface IArrayCollapseProps extends CollapseProps {
@@ -70,7 +69,7 @@ const insertActiveKeys = (activeKeys: number[], index: number) => {
 }
 
 const ArrayCollapseInner = observer(
-  defineComponent<IArrayCollapseProps>({
+  defineComponent({
     name: 'ArrayCollapse',
     props: {
       defaultOpenPanelCount: {
@@ -107,16 +106,10 @@ const ArrayCollapseInner = observer(
         const renderAddition = () => {
           return schema.reduceProperties((addition, schema, key) => {
             if (isAdditionComponent(schema)) {
-              return h(
-                RecursionField,
-                {
-                  props: {
-                    schema,
-                    name: key,
-                  },
-                },
-                {}
-              )
+              return h(RecursionField, {
+                schema,
+                name: key,
+              })
             }
             return addition
           }, null)
@@ -130,7 +123,7 @@ const ArrayCollapseInner = observer(
               class: [`${prefixCls}-item`],
             },
             {
-              default: () => h(Empty, {}, {}),
+              default: () => h(Empty),
             }
           )
         }
@@ -160,36 +153,26 @@ const ArrayCollapseInner = observer(
             const header = h(
               ArrayBase.Item,
               {
-                props: {
-                  index,
-                  record: item,
-                },
+                index,
+                record: item,
               },
               {
                 default: () => [
-                  h(
-                    RecursionField,
-                    {
-                      props: {
-                        schema: items,
-                        name: index,
-                        filterProperties: (schema) => {
-                          if (!isIndexComponent(schema)) return false
-                          return true
-                        },
-                        onlyRenderProperties: true,
-                      },
+                  h(RecursionField, {
+                    schema: items,
+                    name: index,
+                    filterProperties: (schema) => {
+                      if (!isIndexComponent(schema)) return false
+                      return true
                     },
-                    {}
-                  ),
+                    onlyRenderProperties: true,
+                  }),
                   errors.length
                     ? h(
                         Badge,
                         {
                           class: [`${prefixCls}-errors-badge`],
-                          props: {
-                            count: errors.length,
-                          },
+                          count: errors.length,
                         },
                         { default: () => headerTitle }
                       )
@@ -201,25 +184,21 @@ const ArrayCollapseInner = observer(
             const extra = h(
               ArrayBase.Item,
               {
-                props: {
-                  index,
-                  record: item,
-                },
+                index,
+                record: item,
               },
               {
                 default: () => [
                   h(
                     RecursionField,
                     {
-                      props: {
-                        schema: items,
-                        name: index,
-                        filterProperties: (schema) => {
-                          if (!isOperationComponent(schema)) return false
-                          return true
-                        },
-                        onlyRenderProperties: true,
+                      schema: items,
+                      name: index,
+                      filterProperties: (schema) => {
+                        if (!isOperationComponent(schema)) return false
+                        return true
                       },
+                      onlyRenderProperties: true,
                     },
                     {
                       default: () => [attrs.extra],
@@ -228,21 +207,15 @@ const ArrayCollapseInner = observer(
                 ],
               }
             )
-            const content = h(
-              RecursionField,
-              {
-                props: {
-                  schema: items,
-                  name: index,
-                  filterProperties: (schema) => {
-                    if (isIndexComponent(schema)) return false
-                    if (isOperationComponent(schema)) return false
-                    return true
-                  },
-                },
+            const content = h(RecursionField, {
+              schema: items,
+              name: index,
+              filterProperties: (schema) => {
+                if (isIndexComponent(schema)) return false
+                if (isOperationComponent(schema)) return false
+                return true
               },
-              {}
-            )
+            })
 
             const newProps = { ...props }
             const newPanelProps = panelProps ? { ...panelProps } : {}
@@ -253,23 +226,18 @@ const ArrayCollapseInner = observer(
             return h(
               Collapse.Panel,
               {
-                props: {
-                  ...newProps,
-                  ...newPanelProps,
-                  key: index,
-                  forceRender: true,
-                },
+                ...newProps,
+                ...newPanelProps,
+                key: index,
+                forceRender: true,
               },
               {
                 default: () => [
                   h(
                     ArrayBase.Item,
                     {
-                      props: {
-                        index,
-                        record: item,
-                        // key: index,
-                      },
+                      index,
+                      record: item,
                     },
                     {
                       default: () => [content],
@@ -285,15 +253,11 @@ const ArrayCollapseInner = observer(
           return h(
             Collapse,
             {
+              ...attrs,
               class: [`${prefixCls}-item`],
-              props: {
-                ...attrs,
-                activeKey: activeKeys.value,
-              },
-              on: {
-                change: (keys: number[]) => {
-                  activeKeys.value = toArr(keys).map(Number)
-                },
+              activeKey: activeKeys.value,
+              onChange: (keys: number[]) => {
+                activeKeys.value = toArr(keys).map(Number)
               },
             },
             { default: () => [items] }
@@ -303,13 +267,9 @@ const ArrayCollapseInner = observer(
         return h(
           ArrayBase,
           {
-            props: {
-              keyMap,
-            },
-            on: {
-              add: (index: number) => {
-                activeKeys.value = insertActiveKeys(activeKeys.value, index)
-              },
+            keyMap,
+            onAdd: (index: number) => {
+              activeKeys.value = insertActiveKeys(activeKeys.value, index)
             },
           },
           {
@@ -323,8 +283,9 @@ const ArrayCollapseInner = observer(
 
 const ArrayCollapsePanel = defineComponent<CollapsePanelProps>({
   name: 'ArrayCollapsePanel',
+  inheritAttrs: false,
   setup(_props, { slots }) {
-    return () => h(Fragment, {}, slots)
+    return () => h(FragmentComponent, {}, slots)
   },
 })
 

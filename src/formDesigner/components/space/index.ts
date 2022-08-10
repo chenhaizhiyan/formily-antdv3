@@ -1,15 +1,7 @@
-import { defineComponent, SetupContext, h, isVNode } from 'vue'
-import type { VNode } from 'vue'
-import { stylePrefix } from '../__builtins__'
-import { each } from '@formily/shared'
+import type { SpaceProps as AntSpaceProps } from 'ant-design-vue/lib/space'
 import { useFormLayout } from '../form-layout'
-// import { isValidElementNode } from "element-plus/es/utils/vue/vnode"
-
-export type SpaceProps = {
-  size: 'small' | 'middle' | 'large' | number
-  direction: 'horizontal' | 'vertical'
-  align: 'start' | 'end' | 'center' | 'baseline'
-}
+import type { VNode } from 'vue'
+import { defineComponent, h } from 'vue'
 
 const spaceSize = {
   small: 8,
@@ -18,23 +10,12 @@ const spaceSize = {
 }
 
 export const Space = defineComponent({
-  name: 'FSpace',
-  props: ['size', 'direction', 'align'],
+  name: 'Space',
+  props: ['size', 'align', 'direction'],
   inheritAttrs: false,
-  setup(props: SpaceProps, { slots }: SetupContext) {
+  // inject: 'configProvider',
+  setup(props: AntSpaceProps, { slots }) {
     const layout = useFormLayout()
-
-    const resolveItems: (children: VNode[]) => VNode[] = (children: VNode[]) => {
-      return children.reduce((buffer, children) => {
-        // if (!isValidElementNode(children)) {
-        if (!isVNode(children)) {
-          if (children.children)
-            return buffer.concat(resolveItems(children.children as VNode[]))
-          return buffer
-        }
-        return buffer.concat(children)
-      }, [] as VNode[])
-    }
 
     return () => {
       const {
@@ -42,23 +23,27 @@ export const Space = defineComponent({
         size = layout.value?.spaceGap ?? 'small',
         direction = 'horizontal',
       } = props
-
-      // const prefixCls = `${stylePrefix}-space`
       const prefixCls = `ant-space`
       const children = slots.default?.()
-
-      // 获取子节点数量
-      let items: VNode[] = resolveItems(children)
-    
-      const len = items.length
-
-      if (len === 0) {
-        return null
+      let items = []
+      if (Array.isArray(children)) {
+        if (children.length === 1) {
+          if ((children[0]['tag'] as string)?.endsWith('Fragment')) {
+            // Fragment hack
+            items = (children[0]['componentOptions'] as { children: VNode[] })
+              ?.children
+          } else {
+            items = children
+          }
+        } else {
+          items = children
+        }
       }
+      const len = items.length
+      if (len === 0) return null
 
       const mergedAlign =
         align === undefined && direction === 'horizontal' ? 'center' : align
-      const marginDirection = 'marginRight' // directionConfig === 'rtl' ? 'marginLeft' : 'marginRight';
 
       const someSpaceClass = {
         [prefixCls]: true,
@@ -67,6 +52,7 @@ export const Space = defineComponent({
       }
 
       const itemClassName = `${prefixCls}-item`
+      const marginDirection = 'marginRight' // directionConfig === 'rtl' ? 'marginLeft' : 'marginRight';
 
       const renderItems = items.map((child, i) =>
         h(
@@ -78,19 +64,27 @@ export const Space = defineComponent({
               i === len - 1
                 ? {}
                 : {
-                  [direction === 'vertical'
-                    ? 'marginBottom'
-                    : marginDirection]:
-                    typeof size === 'string'
-                      ? `${spaceSize[size]}px`
-                      : `${size}px`,
-                },
+                    [direction === 'vertical'
+                      ? 'marginBottom'
+                      : marginDirection]:
+                      typeof size === 'string'
+                        ? `${spaceSize[size]}px`
+                        : `${size}px`,
+                  },
           },
           { default: () => [child] }
         )
       )
 
-      return h('div', { class: someSpaceClass }, { default: () => renderItems })
+      return h(
+        'div',
+        {
+          class: someSpaceClass,
+        },
+        {
+          default: () => renderItems,
+        }
+      )
     }
   },
 })

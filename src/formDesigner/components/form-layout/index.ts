@@ -1,15 +1,6 @@
-import {
-  provide,
-  inject,
-  InjectionKey,
-  defineComponent,
-  Ref,
-  ref,
-  watch,
-  SetupContext,
-} from 'vue'
-import { h } from '@formily/vue'
-import { stylePrefix } from '../__builtins__'
+import type { InjectionKey, Ref } from 'vue'
+import { provide, inject, defineComponent, ref, watch, h } from 'vue'
+import { stylePrefix } from '../__builtins__/configs'
 import { useResponsiveFormLayout } from './useResponsiveFormLayout'
 
 export type FormLayoutProps = {
@@ -105,14 +96,15 @@ export const FormLayout = defineComponent({
     gridColumnGap: {},
     gridRowGap: {},
   },
-  setup(customProps: any, { slots }: SetupContext) {
-    const { props }: any = useResponsiveFormLayout(customProps as any)
+  setup(customProps, { slots }) {
+    const { props } = useResponsiveFormLayout(customProps as any)
 
     const deepLayout = useFormDeepLayout()
     const newDeepLayout = ref({
       ...deepLayout.value,
     })
     const shallowProps = ref({})
+
     watch(
       [props, deepLayout],
       () => {

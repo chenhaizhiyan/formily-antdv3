@@ -1,5 +1,6 @@
-import { defineComponent, onBeforeUnmount } from 'vue'
-import { h, Fragment } from '@formily/vue'
+import { defineComponent, onBeforeUnmount, h } from 'vue'
+import { FragmentComponent } from '@formily/vue'
+
 export interface IPortalProps {
   id?: string | symbol
 }
@@ -31,7 +32,7 @@ export const createPortalProvider = (id: string | symbol) => {
         PortalMap.set(id, this)
       }
 
-      return h(Fragment, {}, this.$scopedSlots)
+      return h(FragmentComponent, {}, this.$slots)
     },
   })
 

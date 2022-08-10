@@ -1,51 +1,57 @@
-import { transformComponent } from '../__builtins__/shared'
 import { connect, mapProps, mapReadPretty } from '@formily/vue'
 import { DatePicker as AntdDatePicker } from 'ant-design-vue'
-
+import type { DatePickerProps as AntdDatePickerProps } from 'ant-design-vue/lib/date-picker'
+import { composeExport } from '../__builtins__'
 import { PreviewText } from '../preview-text'
 
-export type DatePickerProps = typeof AntdDatePicker
-
-const TransformElDatePicker = transformComponent<DatePickerProps>(
-  AntdDatePicker,
-  {
-    change: 'update:modelValue',
+const mapDateFormat = function () {
+  const getDefaultFormat = (props: AntdDatePickerProps) => {
+    if (props['picker'] === 'month') {
+      return 'YYYY-MM'
+    } else if (props['picker'] === 'quarter') {
+      return 'YYYY-\\QQ'
+    } else if (props['picker'] === 'year') {
+      return 'YYYY'
+    } else if (props['picker'] === 'week') {
+      return 'YYYY-wo'
+    }
+    return props['showTime'] ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'
   }
-)
-
-const getDefaultFormat = (props: DatePickerProps, formatType = 'format') => {
-  const type = props.type
-
-  if (type === 'week' && formatType === 'format') {
-    return '[Week] ww'
-  } else if (type === 'month') {
-    return 'YYYY-MM'
-  } else if (type === 'year') {
-    return 'YYYY'
-  } else if (type === 'datetime' || type === 'datetimerange') {
-    return 'YYYY-MM-DD HH:mm:ss'
+  return (props: any) => {
+    // const format = props['format'] || getDefaultFormat(props)
+    return {
+      ...props,
+      valueFormat: props.valueFormat || getDefaultFormat(props),
+    }
   }
-
-  return 'YYYY-MM-DD'
 }
 
-export const DatePicker = connect(
-  TransformElDatePicker,
-  mapProps(
-    {
-      value: 'modelValue',
-      readOnly: 'readonly',
-    },
-    (props: any) => {
-      return {
-        ...props,
-        format: props.format || getDefaultFormat(props),
-        valueFormat:
-          props.valueFormat || getDefaultFormat(props, 'valueFormat'),
-      }
-    }
-  ),
+export const _DatePicker = connect(
+  AntdDatePicker,
+  mapProps(mapDateFormat()),
   mapReadPretty(PreviewText.DatePicker)
 )
+
+export const _RangePicker = connect(
+  AntdDatePicker.RangePicker,
+  mapProps(mapDateFormat()),
+  mapReadPretty(PreviewText.DateRangePicker)
+)
+
+export const _WeekPicker = connect(
+  AntdDatePicker.WeekPicker,
+  mapProps(mapDateFormat())
+)
+
+export const _MonthPicker = connect(
+  AntdDatePicker.MonthPicker,
+  mapProps(mapDateFormat())
+)
+
+export const DatePicker = composeExport(_DatePicker, {
+  RangePicker: _RangePicker,
+  WeekPicker: _WeekPicker,
+  MonthPicker: _MonthPicker,
+})
 
 export default DatePicker

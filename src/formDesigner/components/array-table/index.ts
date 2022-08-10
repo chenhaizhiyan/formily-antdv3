@@ -1,11 +1,10 @@
 import type { Ref } from 'vue'
-import { defineComponent, ref, computed } from 'vue'
+import { defineComponent, ref, computed, h } from 'vue'
 import type { GeneralField, FieldDisplayTypes, ArrayField } from '@formily/core'
 import {
   useField,
   useFieldSchema,
-  h,
-  Fragment,
+  FragmentComponent,
   RecursionField,
 } from '@formily/vue'
 import { observer } from '@formily/reactive-vue'
@@ -17,10 +16,9 @@ import type { Schema } from '@formily/json-schema'
 import type { VNode } from 'vue'
 import { Table, Pagination, Select, Badge } from 'ant-design-vue'
 import { Space } from '../space'
-import type { Table as TableProps } from 'ant-design-vue/types/table/table'
-import type { Column as ColumnProps } from 'ant-design-vue/types/table/column'
-import type { Pagination as PaginationProps } from 'ant-design-vue/types/pagination'
-import type { Select as SelectProps } from 'ant-design-vue/types/select/select'
+import type { TableProps, ColumnProps } from 'ant-design-vue/lib/table'
+import type { PaginationProps } from 'ant-design-vue/lib/pagination'
+import type { SelectProps } from 'ant-design-vue/lib/select'
 
 interface ObservableColumnSource {
   field: GeneralField
@@ -104,7 +102,6 @@ const useArrayTableSources = (
 }
 
 const useArrayTableColumns = (
-  dataSource: any[],
   sources: ObservableColumnSource[]
 ): ColumnProps[] => {
   return sources.reduce((buf, { name, columnProps, schema, display }, key) => {
@@ -114,31 +111,20 @@ const useArrayTableColumns = (
       ...columnProps,
       key,
       dataIndex: name,
-      customRender: (value: any, record: any) => {
-        const index = dataSource.indexOf(record)
+      customRender: ({ record, index }) => {
         const children = h(
           ArrayBase.Item,
           {
             key: `${key}${index}`,
-            props: {
-              index,
-              record,
-            },
+            index,
+            record,
           },
-          {
-            default: () =>
-              h(
-                RecursionField,
-                {
-                  props: {
-                    schema,
-                    name: index,
-                    onlyRenderProperties: true,
-                  },
-                },
-                {}
-              ),
-          }
+          () =>
+            h(RecursionField, {
+              schema,
+              name: index,
+              onlyRenderProperties: true,
+            })
         )
         return children
       },
@@ -150,16 +136,10 @@ const useAddition = () => {
   const schema = useFieldSchema()
   return schema.value.reduceProperties((addition, schema, key) => {
     if (isAdditionComponent(schema)) {
-      return h(
-        RecursionField,
-        {
-          props: {
-            schema,
-            name: key,
-          },
-        },
-        {}
-      )
+      return h(RecursionField, {
+        schema,
+        name: key,
+      })
     }
     return addition
   }, null)
@@ -170,9 +150,9 @@ const schedulerRequest = {
 }
 
 const StatusSelect = observer(
-  defineComponent<IStatusSelectProps>({
+  defineComponent({
     props: ['value', 'options', 'pageSize', 'onChange'],
-    setup(props) {
+    setup(props: IStatusSelectProps) {
       const fieldRef = useField<ArrayField>()
       const prefixCls = `${stylePrefix}-array-table`
 
@@ -199,40 +179,30 @@ const StatusSelect = observer(
                 'has-error': errors?.length,
               },
             ],
-            props: {
-              value: props.value,
-              virtual: true,
-            },
-            on: {
-              change: props.onChange,
-            },
+            value: props.value,
+            virtual: true,
+            onChange: props.onChange,
           },
           {
             default: () => {
               return props.options?.map(({ label, value }) => {
                 const hasError = errors.some(({ address }) => {
                   const currentIndex = parseIndex(address)
-                  const startIndex = (value - 1) * props.pageSize
-                  const endIndex = value * props.pageSize
+                  const startIndex = ((value as number) - 1) * props.pageSize
+                  const endIndex = (value as number) * props.pageSize
                   return currentIndex >= startIndex && currentIndex <= endIndex
                 })
                 return h(
                   Select.Option,
                   {
                     key: value,
-                    props: {
-                      label,
-                      value,
-                    },
+                    label,
+                    value,
                   },
                   {
                     default: () => {
                       if (hasError) {
-                        return h(
-                          Badge,
-                          { props: { dot: true } },
-                          { default: () => label }
-                        )
+                        return h(Badge, { dot: true }, () => label)
                       }
                       return label
                     },
@@ -290,59 +260,31 @@ const ArrayTablePagination = defineComponent<IArrayTablePaginationProps>({
           {
             class: [`${prefixCls}-pagination`],
           },
-          {
-            default: () =>
-              h(
-                Space,
-                {},
-                {
-                  default: () => [
-                    h(
-                      StatusSelect,
-                      {
-                        props: {
-                          value: current.value,
-                          onChange: handleChange,
-                          pageSize: pageSize.value,
-                          options: pages.value,
-                          notFoundContent: false,
-                        },
-                      },
-                      {}
-                    ),
-                    h(
-                      Pagination,
-                      {
-                        props: {
-                          ...props,
-                          pageSize: pageSize.value,
-                          current: current.value,
-                          size: size.value,
-                          total: total.value,
-                          showSizeChanger: false,
-                        },
-                        on: {
-                          change: handleChange,
-                        },
-                      },
-                      {}
-                    ),
-                  ],
-                }
-              ),
-          }
+          h(Space, {}, () => [
+            h(StatusSelect, {
+              value: current.value,
+              onChange: handleChange,
+              pageSize: pageSize.value,
+              options: pages.value,
+              notFoundContent: false,
+            }),
+            h(Pagination, {
+              ...props,
+              pageSize: pageSize.value,
+              current: current.value,
+              size: size.value,
+              total: total.value,
+              showSizeChanger: false,
+              onChange: handleChange,
+            }),
+          ])
         )
       }
-      return h(
-        Fragment,
-        {},
-        {
-          default: () =>
-            slots?.default?.(
-              dataSource.value?.slice(startIndex.value, endIndex.value + 1),
-              renderPagination
-            ),
-        }
+      return h(FragmentComponent, {}, () =>
+        slots?.default?.(
+          dataSource.value?.slice(startIndex.value, endIndex.value + 1),
+          renderPagination
+        )
       )
     }
   },
@@ -352,7 +294,7 @@ const ArrayTableInner = observer(
   defineComponent<TableProps>({
     name: 'ArrayTable',
     inheritAttrs: false,
-    setup(_props, { attrs, slots, listeners }) {
+    setup(_props, { attrs, slots }) {
       const fieldRef = useField<ArrayField>()
       const schemaRef = useFieldSchema()
       const prefixCls = `${stylePrefix}-array-table`
@@ -367,26 +309,19 @@ const ArrayTableInner = observer(
         const field = fieldRef.value
         const dataSource = Array.isArray(field.value) ? field.value.slice() : []
         const sources = useArrayTableSources(fieldRef, schemaRef)
-        const columns = useArrayTableColumns(dataSource, sources)
+        const columns = useArrayTableColumns(sources)
         const pagination = isBool(props.pagination) ? {} : props.pagination
 
         const renderStateManager = () =>
           sources.map((column, key) => {
             //专门用来承接对Column的状态管理
             if (!isColumnComponent(column.schema)) return
-            return h(
-              RecursionField,
-              {
-                props: {
-                  name: column.name,
-                  schema: column.schema,
-                  onlyRenderSelf: true,
-                  key,
-                },
-                key,
-              },
-              {}
-            )
+            return h(RecursionField, {
+              name: column.name,
+              schema: column.schema,
+              onlyRenderSelf: true,
+              key,
+            })
           })
 
         const renderTable = (dataSource?: any[], pager?: () => VNode) => {
@@ -395,51 +330,39 @@ const ArrayTableInner = observer(
             {
               class: prefixCls,
             },
-            {
-              default: () =>
+            h(
+              ArrayBase,
+              {
+                keyMap,
+              },
+              () => [
                 h(
-                  ArrayBase,
+                  Table,
                   {
-                    props: {
-                      keyMap,
+                    ...attrs,
+                    size: 'small',
+                    bordered: true,
+                    rowKey: defaultRowKey,
+                    pagination: false,
+                    columns,
+                    dataSource,
+                  },
+                  slots
+                ),
+                h(
+                  'div',
+                  {
+                    style: {
+                      marginTop: '5px',
+                      marginBottom: '5px',
                     },
                   },
-                  {
-                    default: () => [
-                      h(
-                        Table,
-                        {
-                          props: {
-                            ...attrs,
-                            size: 'small',
-                            bordered: true,
-                            rowKey: defaultRowKey,
-                            pagination: false,
-                            columns,
-                            dataSource,
-                          },
-                          on: listeners,
-                        },
-                        { ...slots }
-                      ),
-                      h(
-                        'div',
-                        {
-                          style: {
-                            marginTop: '5px',
-                            marginBottom: '5px',
-                          },
-                        },
-                        {
-                          default: () => [pager?.()],
-                        }
-                      ),
-                      renderStateManager(),
-                      useAddition(),
-                    ],
-                  }
+                  pager?.()
                 ),
-            }
+                renderStateManager(),
+                useAddition(),
+              ]
+            )
           )
         }
 
@@ -450,10 +373,8 @@ const ArrayTableInner = observer(
         return h(
           ArrayTablePagination,
           {
-            attrs: {
-              ...pagination,
-              dataSource,
-            },
+            ...pagination,
+            dataSource,
           },
           {
             default: renderTable,
@@ -466,8 +387,8 @@ const ArrayTableInner = observer(
 
 const ArrayTableColumn = defineComponent({
   name: 'ArrayTableColumn',
-  render(createElement) {
-    return createElement()
+  render() {
+    return null
   },
 })
 

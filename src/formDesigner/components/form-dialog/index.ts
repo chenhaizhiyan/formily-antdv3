@@ -1,17 +1,15 @@
 import { Button, Modal } from 'ant-design-vue'
-import type { Modal as ModalProps } from 'ant-design-vue/types/modal'
-import { FormProvider, h, Fragment } from '@formily/vue'
+import type { ModalProps } from 'ant-design-vue/lib/modal'
+import { FormProvider, FragmentComponent } from '@formily/vue'
 import { observer } from '@formily/reactive-vue'
 import type { IMiddleware } from '@formily/shared'
 import { isNum, isStr, isBool, isFn, applyMiddleware } from '@formily/shared'
 import { toJS } from '@formily/reactive'
 import type { Form, IFormProps } from '@formily/core'
 import { createForm } from '@formily/core'
-import { Component, Teleport, VNode,createApp } from 'vue'
-// import Vue from 'vue'
+import type { VNode, Component } from 'vue'
+import { h, defineComponent, createApp, Teleport } from 'vue'
 import { stylePrefix } from '../__builtins__/configs'
-import { defineComponent } from 'vue'
-// import { Portal, PortalTarget } from 'portal-vue'
 
 import {
   isValidElement,
@@ -89,6 +87,7 @@ export function FormDialog(
     root: document.createElement('div'),
     form: null,
     promise: null,
+    app: null,
     instance: null,
     openMiddlewares: [],
     confirmMiddlewares: [],
@@ -102,8 +101,9 @@ export function FormDialog(
     ...props,
     afterClose: () => {
       props.afterClose?.()
-      env.instance.$destroy()
+      env.app?.unmount()
       env.instance = null
+      env.app = null
       env.root?.parentNode?.removeChild(env.root)
       env.root = undefined
     },
@@ -115,7 +115,7 @@ export function FormDialog(
       setup() {
         return () =>
           h(
-            Fragment,
+            FragmentComponent,
             {},
             {
               default: () => resolveComponent(renderer, { form: env.form }),
@@ -132,140 +132,126 @@ export function FormDialog(
   ) => {
     if (!env.instance) {
       // eslint-disable-next-line vue/one-component-per-file
-      const ComponentConstructor = observer(
-        createApp({
-          props: ['dialogProps'],
-          data() {
-            return {
-              visible: false,
-            }
-          },
-          render() {
-            const {
-              onOk,
-              onCancel,
-              title,
-              footer,
-              okText = '确定',
-              okType = 'primary',
-              okButtonProps,
-              cancelButtonProps,
-              cancelText = '取消',
-              ...dialogProps
-            } = this.dialogProps
-            return h(
-              Modal,
-              {
-                class: prefixCls,
-                props: {
-                  ...dialogProps,
-                  visible: this.visible,
-                },
-                on: {
-                  'update:visible': (val) => {
-                    this.visible = val
-                  },
-                  cancel: (e) => {
-                    if (onCancel?.(e) !== false) {
-                      reject?.()
-                    }
-                  },
-                  ok: (e) => {
-                    if (onOk?.(e) !== false) {
-                      resolve?.()
-                    }
-                  },
-                },
+      const ComponentConstructor = defineComponent({
+        props: ['dialogProps'],
+        data() {
+          return {
+            visible: false,
+          }
+        },
+        render() {
+          const {
+            onOk,
+            onCancel,
+            title,
+            footer,
+            okText = '确定',
+            okType = 'primary',
+            okButtonProps,
+            cancelButtonProps,
+            cancelText = '取消',
+            ...dialogProps
+          } = this.dialogProps
+          return h(
+            Modal,
+            {
+              class: prefixCls,
+              ...dialogProps,
+              visible: this.visible,
+              'onUpdate:visible': (val) => {
+                this.visible = val
               },
-              {
-                default: () =>
-                  h(
-                    FormProvider,
-                    {
-                      props: {
-                        form: env.form,
-                      },
-                    },
-                    {
-                      default: () => [h(DialogContent, {}, {})],
-                    }
-                  ),
-                title: () =>
-                  h(Fragment, {}, { default: () => resolveComponent(title) }),
-                footer: () =>
-                  h(
-                    Fragment,
-                    {},
-                    {
-                      default: () => {
-                        const FooterProtalTarget = h(
-                          // PortalTarget,
-                          'span',
+              onCancel: (e) => {
+                if (onCancel?.(e) !== false) {
+                  reject?.()
+                }
+              },
+              onOk: (e) => {
+                if (onOk?.(e) !== false) {
+                  resolve?.()
+                }
+              },
+            },
+            {
+              default: () =>
+                h(
+                  FormProvider,
+                  {
+                    form: env.form,
+                  },
+                  {
+                    default: () => [h(DialogContent, {}, {})],
+                  }
+                ),
+              title: () =>
+                h(
+                  FragmentComponent,
+                  {},
+                  { default: () => resolveComponent(title) }
+                ),
+              footer: () =>
+                h(
+                  FragmentComponent,
+                  {},
+                  {
+                    default: () => {
+                      const FooterProtalTarget = h(
+                        'span',
+                        {
+                          id: PORTAL_TARGET_NAME,
+                        },
+                        {}
+                      )
+                      if (footer === null) {
+                        return [null, FooterProtalTarget]
+                      } else if (footer) {
+                        return [resolveComponent(footer), FooterProtalTarget]
+                      }
+                      return [
+                        h(
+                          Button,
                           {
-                            props: {
-                              name: PORTAL_TARGET_NAME,
-                              slim: true,
+                            ...cancelButtonProps,
+                            onClick: (e) => {
+                              onCancel?.(e)
+                              reject()
                             },
                           },
-                          {}
-                        )
-                        if (footer === null) {
-                          return [null, FooterProtalTarget]
-                        } else if (footer) {
-                          return [resolveComponent(footer), FooterProtalTarget]
-                        }
-                        return [
-                          h(
-                            Button,
-                            {
-                              attrs: cancelButtonProps,
-                              on: {
-                                click: (e) => {
-                                  onCancel?.(e)
-                                  reject()
-                                },
-                              },
+                          {
+                            default: () => resolveComponent(cancelText),
+                          }
+                        ),
+                        h(
+                          Button,
+                          {
+                            ...okButtonProps,
+                            type: okType,
+                            loading: env.form.submitting,
+                            onClick: (e) => {
+                              onOk?.(e)
+                              resolve()
                             },
-                            {
-                              default: () => resolveComponent(cancelText),
-                            }
-                          ),
-                          h(
-                            Button,
-                            {
-                              attrs: {
-                                ...okButtonProps,
-                                type: okType,
-                                loading: env.form.submitting,
-                              },
-                              on: {
-                                click: (e) => {
-                                  onOk?.(e)
-                                  resolve()
-                                },
-                              },
-                            },
-                            {
-                              default: () => resolveComponent(okText),
-                            }
-                          ),
-                          FooterProtalTarget,
-                        ]
-                      },
-                    }
-                  ),
-              }
-            )
-          },
-        })
-      )
-      env.instance = new ComponentConstructor({
-        propsData: {
-          dialogProps,
+                          },
+                          {
+                            default: () => resolveComponent(okText),
+                          }
+                        ),
+                        FooterProtalTarget,
+                      ]
+                    },
+                  }
+                ),
+            }
+          )
         },
+      })
+
+      env.app = createApp(ComponentConstructor, {
+        dialogProps,
         parent: getProtalContext(id as string | symbol),
       })
-      env.instance.$mount(env.root)
+
+      env.instance = env.app.mount(env.root)
     }
     env.instance.visible = visible
   }
@@ -335,16 +321,17 @@ const DialogFooter = defineComponent({
   name: 'DialogFooter',
   setup(props, { slots }) {
     return () => {
-      return h(
-        // Portal,
-        Teleport,
-        {
-          props: {
-            to: PORTAL_TARGET_NAME,
+      if (document.querySelector(`#${PORTAL_TARGET_NAME}`)) {
+        return h(
+          Teleport as any,
+          {
+            to: `#${PORTAL_TARGET_NAME}`,
           },
-        },
-        slots
-      )
+          slots
+        )
+      } else {
+        return null
+      }
     }
   },
 })

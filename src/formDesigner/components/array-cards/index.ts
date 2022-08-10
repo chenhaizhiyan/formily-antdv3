@@ -1,13 +1,13 @@
 import { Card, Empty } from 'ant-design-vue'
-import type { Card as CardProps } from 'ant-design-vue/types/card'
+import type { CardProps } from 'ant-design-vue/lib/card'
 import type { ArrayField } from '@formily/core'
-import { useField, useFieldSchema, RecursionField, h } from '@formily/vue'
+import { useField, useFieldSchema, RecursionField } from '@formily/vue'
 import { observer } from '@formily/reactive-vue'
 import type { ISchema } from '@formily/json-schema'
 import { stylePrefix } from '../__builtins__/configs'
 import { ArrayBase } from '../array-base'
 import { composeExport } from '../__builtins__/shared'
-import { defineComponent } from 'vue'
+import { defineComponent, h } from 'vue'
 
 const isAdditionComponent = (schema: ISchema) => {
   return schema['x-component']?.indexOf('Addition') > -1
@@ -39,19 +39,22 @@ const isOperationComponent = (schema: ISchema) => {
 }
 
 const ArrayCardsInner = observer(
-  defineComponent<CardProps>({
+  defineComponent({
     name: 'ArraryCards',
-    props: [],
-    setup(_props, { attrs }) {
+    inheritAttrs: false,
+    props: ['onChange'],
+    setup(_props: CardProps, { attrs }) {
       const fieldRef = useField<ArrayField>()
       const schemaRef = useFieldSchema()
       const prefixCls = `${stylePrefix}-array-cards`
       const { getKey, keyMap } = ArrayBase.useKey(schemaRef.value)
+      const props = { ...attrs }
+
       return () => {
-        const props = { ...attrs }
         const field = fieldRef.value
         const schema = schemaRef.value
         const dataSource = Array.isArray(field.value) ? field.value : []
+
         if (!schema) throw new Error('can not found schema object')
         const renderItems = () => {
           return dataSource?.map((item, index) => {
@@ -64,21 +67,15 @@ const ArrayCardsInner = observer(
               {},
               {
                 default: () => [
-                  h(
-                    RecursionField,
-                    {
-                      props: {
-                        schema: items,
-                        name: index,
-                        filterProperties: (schema) => {
-                          if (!isIndexComponent(schema)) return false
-                          return true
-                        },
-                        onlyRenderProperties: true,
-                      },
+                  h(RecursionField, {
+                    schema: items,
+                    name: index,
+                    filterProperties: (schema) => {
+                      if (!isIndexComponent(schema)) return false
+                      return true
                     },
-                    {}
-                  ),
+                    onlyRenderProperties: true,
+                  }),
                   props.title || field.title,
                 ],
               }
@@ -89,58 +86,44 @@ const ArrayCardsInner = observer(
               {},
               {
                 default: () => [
-                  h(
-                    RecursionField,
-                    {
-                      props: {
-                        schema: items,
-                        name: index,
-                        filterProperties: (schema) => {
-                          if (!isOperationComponent(schema)) return false
-                          return true
-                        },
-                        onlyRenderProperties: true,
-                      },
+                  h(RecursionField, {
+                    schema: items,
+                    name: index,
+                    filterProperties: (schema) => {
+                      if (!isOperationComponent(schema)) return false
+                      return true
                     },
-                    {}
-                  ),
+                    onlyRenderProperties: true,
+                  }),
                   props.extra,
                 ],
               }
             )
 
-            const content = h(
-              RecursionField,
-              {
-                props: {
-                  schema: items,
-                  name: index,
-                  filterProperties: (schema) => {
-                    if (isIndexComponent(schema)) return false
-                    if (isOperationComponent(schema)) return false
-                    return true
-                  },
-                },
+            const content = h(RecursionField, {
+              schema: items,
+              name: index,
+              filterProperties: (schema) => {
+                if (isIndexComponent(schema)) return false
+                if (isOperationComponent(schema)) return false
+                return true
               },
-              {}
-            )
+            })
 
             return h(
               ArrayBase.Item,
               {
                 key: getKey(item, index),
-                props: {
-                  index,
-                  record: item,
-                },
+                index,
+                record: item,
               },
               {
                 default: () =>
                   h(
                     Card,
                     {
+                      ...attrs,
                       class: [`${prefixCls}-item`],
-                      attrs,
                     },
                     {
                       default: () => content,
@@ -156,16 +139,10 @@ const ArrayCardsInner = observer(
         const renderAddition = () => {
           return schema.reduceProperties((addition, schema, key) => {
             if (isAdditionComponent(schema)) {
-              return h(
-                RecursionField,
-                {
-                  props: {
-                    schema,
-                    name: key,
-                  },
-                },
-                {}
-              )
+              return h(RecursionField, {
+                schema,
+                name: key,
+              })
             }
             return addition
           }, null)
@@ -176,23 +153,19 @@ const ArrayCardsInner = observer(
           return h(
             Card,
             {
+              ...attrs,
               class: [`${prefixCls}-item`],
-              props: {
-                title: props.title || field.title,
-              },
-              attrs: {
-                ...attrs,
-              },
+              title: props.title || field.title,
             },
             {
-              default: () => h(Empty, {}, {}),
+              default: () => h(Empty),
             }
           )
         }
 
         return h(
           ArrayBase,
-          { props: { keyMap } },
+          { keyMap },
           {
             default: () => [renderEmpty(), renderItems(), renderAddition()],
           }
