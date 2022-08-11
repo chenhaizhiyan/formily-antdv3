@@ -39,8 +39,8 @@ export const Card: DnFC<VNode> = composeExport(
               // </div>
             )
           }}>
-            {children.length ? children.map(node => <TreeNodeWidget key={node.id} node={node} />) : <DroppableWidget key={node.id} node={node} />}
-            {/* {slots.default?.()} */}
+            {/* {children.length ? children.map(node => <TreeNodeWidget key={node.id} node={node} />) : <DroppableWidget node={node} />} */}
+            {slots.default?.()}
           </ACard>
         )
       }
