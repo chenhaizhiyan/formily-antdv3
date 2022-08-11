@@ -124,7 +124,6 @@ const useKey = (schema: Schema) => {
     getKey: (record: any, index?: number) => {
       if (keyMap instanceof WeakMap) {
         if (!keyMap.has(record)) {
-          console.log('record--:', record)
           keyMap.set(record, uid())
         }
         return `${keyMap.get(record)}-${index}`

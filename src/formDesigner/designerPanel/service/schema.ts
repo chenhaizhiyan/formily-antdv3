@@ -12,7 +12,6 @@ export const saveSchema = (designer: Engine) => {
     JSON.stringify(schema)
   )
   message.success('Save Success');
-  console.log('schema', schema)
 }
 
 export const loadInitialSchema = (designer: Engine) => {

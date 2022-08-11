@@ -52,7 +52,6 @@ export const DataSettingPanel = observer(
                             values = dataItem
                         }
                     })
-                    console.log('values:', values)
                     formRef.value = createForm({
                         values,
                         effects: props.effects

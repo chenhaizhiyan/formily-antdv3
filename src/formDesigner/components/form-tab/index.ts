@@ -68,7 +68,6 @@ const FormTabInner = observer(
     inheritAttrs: false,
     props: ['formTab'],
     setup(props: IFormTabProps, { attrs }) {
-      console.log('===============form tab')
       const field = useField().value
       const formTabRef = computed(() => props.formTab ?? createFormTab())
 

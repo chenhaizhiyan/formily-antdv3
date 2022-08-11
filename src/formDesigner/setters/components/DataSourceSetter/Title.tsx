@@ -56,7 +56,8 @@ const titleInner = defineComponent({
         return () => {
             const prefix = prefixRef.value
             return (
-                <div class={prefix} onClick={e => { e.stopPropagation(); e.preventDefault() }}>
+                //  onClick={e => { e.stopPropagation(); e.preventDefault() }}
+                <div class={prefix}>
                     <span style={{ marginRight: '5px' }}>
                         {renderTitle(props.map || [])}
                     </span>
