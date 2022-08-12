@@ -5,49 +5,71 @@ export const DatePicker = {
     title: '日期选择',
     settings: {
       'x-component-props': {
-        editable: { title: '文本框可输入' },
-        clearable: { title: '显示清除按钮' },
-        size: { title: '尺寸' },
-        placeholder: '非范围选择时的占位内容',
-        'start-placeholder': '开始日期占位内容',
-        'end-placeholder': '结束日期占位内容',
-        type: { title: '显示类型' },
-        format: { title: '显示在输入框中的格式' },
-        align: { title: '对齐方式' },
-        'popper-class': { title: '下拉框的类名' },
-        'picker-options': { title: '选项' },
-        'range-separator': { title: '分隔符' },
-        'default-value': { title: '默认显示的时间' },
-        'default-time': { title: '范围选择时选中日期所使用的当日内具体时刻' },
-        'value-format': { title: '绑定值的格式。不指定则绑定值为 Date 对象' },
-        'unlink-panels': { title: '面板联动' },
-        'prefix-icon': { title: '头部图标' },
-        'clear-icon': { title: '清空图标' },
+        disabledDate: {
+          title: '不可选日期',
+          tooltip: '格式 (currentDate: moment) => boolean',
+        },
+        disabledTime: {
+          title: '不可选时间',
+          tooltip: '格式 (currentDate: moment) => boolean',
+        },
+        inputReadOnly: '输入框只读',
+        format: '格式',
+        picker: {
+          title: '选择器类型',
+          dataSource: ['时间', '日期', '月份', '年', '季度', '财年'],
+        },
+        showNow: '显示此刻',
+        showTime: '时间选择',
+        showToday: '显示今天',
       },
     },
-    'en-US': {
-      title: 'DatePicker',
-      settings: {
-        'x-component-props': {
-          editable: { title: '文本框可输入' },
-          clearable: { title: '显示清除按钮' },
-          size: { title: '尺寸' },
-          placeholder: '非范围选择时的占位内容',
-          'start-placeholder': '范围选择时开始日期的占位内容',
-          'end-placeholder': '范围选择时结束日期的占位内容',
-          type: { title: '显示类型' },
-          format: { title: '显示在输入框中的格式' },
-          align: { title: '对齐方式' },
-          'popper-class': { title: '下拉框的类名' },
-          'picker-options': { title: '选项' },
-          'range-separator': { title: '分隔符' },
-          'default-value': { title: '默认显示的时间' },
-          'default-time': { title: '范围选择时选中日期所使用的当日内具体时刻' },
-          'value-format': { title: '绑定值的格式。不指定则绑定值为 Date 对象' },
-          'unlink-panels': { title: '面板联动' },
-          'prefix-icon': { title: '头部图标' },
-          'clear-icon': { title: '清空图标' },
+  },
+  'en-US': {
+    title: 'DatePicker',
+    settings: {
+      'x-component-props': {
+        disabledDate: {
+          title: 'Disabled Date',
+          tooltip: 'Format (currentDate: moment) => boolean',
         },
+        disabledTime: {
+          title: 'Disabled Time',
+          tooltip: 'Format (currentDate: moment) => boolean',
+        },
+        inputReadOnly: 'Input ReadOnly',
+        format: 'Format',
+        picker: {
+          title: 'Picker Type',
+          dataSource: ['Time', 'Date', 'Month', 'Year', 'Quarter', 'Decade'],
+        },
+        showNow: 'Show Now',
+        showTime: 'Show Time',
+        showToday: 'Show Today',
+      },
+    },
+  },
+  'ko-KR': {
+    title: '날짜 선택 상자',
+    settings: {
+      'x-component-props': {
+        disabledDate: {
+          title: '비활성화 된 날짜',
+          tooltip: '형식 (currentDate: moment) => boolean',
+        },
+        disabledTime: {
+          title: '비활성화 된 시간',
+          tooltip: '형식 (currentDate: moment) => boolean',
+        },
+        inputReadOnly: 'ReadOnly',
+        format: '포맷',
+        picker: {
+          title: '타입',
+          dataSource: ['시간', '날짜', '월', '년', '분기', '십년 단위'],
+        },
+        showNow: '현재 시각 보기',
+        showTime: '시간 보기',
+        showToday: '오늘 보기',
       },
     },
   },
@@ -64,4 +86,3 @@ export const DateRangePicker = createLocales(DatePicker, {
     title: '날짜범위 선택 상자',
   },
 })
-

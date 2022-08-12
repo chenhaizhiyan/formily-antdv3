@@ -15,6 +15,7 @@ import type {
   CascaderOptionType,
 } from 'ant-design-vue/lib/cascader'
 import type { TimePickerProps } from 'ant-design-vue/lib/time-picker'
+import type { TimeRangePickerProps } from 'ant-design-vue/lib/time-picker'
 import type { DatePickerProps } from 'ant-design-vue/lib/date-picker'
 import type { RangePickerProps } from 'ant-design-vue/lib/date-picker'
 
@@ -267,6 +268,35 @@ const TimePicker = defineComponent<TimePickerProps>({
 })
 
 // eslint-disable-next-line vue/one-component-per-file
+const TimeRangePicker = defineComponent<TimeRangePickerProps>({
+  name: 'PreviewTextTimeRangePicker',
+  setup(_props, { attrs }) {
+    const props = attrs as unknown as TimeRangePickerProps
+    const placeholder = usePlaceholder()
+    const getLabels = () => {
+      const labels = formatMomentValue(
+        props.value,
+        props.format,
+        placeholder.value
+      )
+      return isArr(labels) ? labels.join('~') : labels
+    }
+    return () => {
+      return h(
+        'div',
+        {
+          class: [prefixCls],
+          style: attrs.style,
+        },
+        {
+          default: () => getLabels() as any,
+        }
+      )
+    }
+  },
+})
+
+// eslint-disable-next-line vue/one-component-per-file
 const DatePicker = defineComponent({
   name: 'PreviewTextDatePicker',
   setup(_props: DatePickerProps, { attrs }) {
@@ -331,6 +361,7 @@ export const PreviewText = composeExport(Text, {
   DatePicker,
   DateRangePicker,
   TimePicker,
+  TimeRangePicker,
   Placeholder: PlaceholderContext.Provider,
   usePlaceholder,
 })

@@ -8,9 +8,9 @@ import { AllSchemas } from '../../schemas'
 import { AllLocales } from '../../locales'
 import { VNode } from 'vue'
 
-export const DatePicker: DnFC<VNode> =
-  composeExport(FormilyDatePicker, {
-    Behavior: createBehavior({
+export const DatePicker: DnFC<VNode> = composeExport(FormilyDatePicker, {
+  Behavior: createBehavior(
+    {
       name: 'DatePicker',
       extends: ['Field'],
       selector: (node) => node.props?.['x-component'] === 'DatePicker',
@@ -18,8 +18,20 @@ export const DatePicker: DnFC<VNode> =
         propsSchema: createFieldSchema(AllSchemas.DatePicker),
       },
       designerLocales: AllLocales.DatePicker,
-    }),
-    Resource: createResource({
+    },
+    {
+      name: 'DatePicker.RangePicker',
+      extends: ['Field'],
+      selector: (node) =>
+        node.props['x-component'] === 'DatePicker.RangePicker',
+      designerProps: {
+        propsSchema: createFieldSchema(AllSchemas.DatePicker.RangePicker),
+      },
+      designerLocales: AllLocales.DateRangePicker,
+    }
+  ),
+  Resource: createResource(
+    {
       icon: 'DatePickerSource',
       elements: [
         {
@@ -32,5 +44,20 @@ export const DatePicker: DnFC<VNode> =
           },
         },
       ],
-    }),
-  })
+    },
+    {
+      icon: 'DateRangePickerSource',
+      elements: [
+        {
+          componentName: 'Field',
+          props: {
+            type: 'string[]',
+            title: 'DateRangePicker',
+            'x-decorator': 'FormItem',
+            'x-component': 'DatePicker.RangePicker',
+          },
+        },
+      ],
+    }
+  ),
+})

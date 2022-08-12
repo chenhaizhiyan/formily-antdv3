@@ -8,9 +8,9 @@ import { AllSchemas } from '../../schemas'
 import { AllLocales } from '../../locales'
 import { VNode } from 'vue'
 
-export const TimePicker: DnFC<VNode> =
-  composeExport(FormilyTimePicker, {
-    Behavior: createBehavior({
+export const TimePicker: DnFC<VNode> = composeExport(FormilyTimePicker, {
+  Behavior: createBehavior(
+    {
       name: 'TimePicker',
       extends: ['Field'],
       selector: (node) => node.props?.['x-component'] === 'TimePicker',
@@ -18,8 +18,20 @@ export const TimePicker: DnFC<VNode> =
         propsSchema: createFieldSchema(AllSchemas.TimePicker),
       },
       designerLocales: AllLocales.TimePicker,
-    }),
-    Resource: createResource({
+    },
+    {
+      name: 'TimePicker.RangePicker',
+      extends: ['Field'],
+      selector: (node) =>
+        node.props['x-component'] === 'TimePicker.RangePicker',
+      designerProps: {
+        propsSchema: createFieldSchema(AllSchemas.TimePicker.RangePicker),
+      },
+      designerLocales: AllLocales.TimeRangePicker,
+    }
+  ),
+  Resource: createResource(
+    {
       icon: 'TimePickerSource',
       elements: [
         {
@@ -32,5 +44,20 @@ export const TimePicker: DnFC<VNode> =
           },
         },
       ],
-    }),
-  })
+    },
+    {
+      icon: 'TimeRangePickerSource',
+      elements: [
+        {
+          componentName: 'Field',
+          props: {
+            type: 'string[]',
+            title: 'TimeRangePicker',
+            'x-decorator': 'FormItem',
+            'x-component': 'TimePicker.RangePicker',
+          },
+        },
+      ],
+    }
+  ),
+})
