@@ -12,8 +12,6 @@ export const FormGrid = {
         columnGap: '列间距',
         rowGap: '行间距',
         colWrap: '自动换行',
-        strictAutoFit:
-          'GridItem 宽度是否严格受限于 maxWidth，不受限的话会自动占满容器',
       },
     },
   },
@@ -30,8 +28,22 @@ export const FormGrid = {
         columnGap: 'Column Gap',
         rowGap: 'Row Gap',
         colWrap: 'Col Wrap',
-        strictAutoFit:
-          'GridItem 宽度是否严格受限于 maxWidth，不受限的话会自动占满容器',
+      },
+    },
+  },
+  'ko-KR': {
+    title: '그리드 열',
+    addGridColumn: '그리드 열 추가',
+    settings: {
+      'x-component-props': {
+        minWidth: '최소 너비',
+        minColumns: '최소 열 개수',
+        maxWidth: '최대 너비',
+        maxColumns: '최대 열 개수',
+        breakpoints: '중단점',
+        columnGap: '열 간격',
+        rowGap: '행 간격',
+        colWrap: '자동 줄바꿈',
       },
     },
   },
@@ -51,6 +63,14 @@ export const FormGridColumn = {
     settings: {
       'x-component-props': {
         gridSpan: 'Grid Span',
+      },
+    },
+  },
+  'ko-KR': {
+    title: '그리드 열',
+    settings: {
+      'x-component-props': {
+        gridSpan: '그리드 스팬',
       },
     },
   },

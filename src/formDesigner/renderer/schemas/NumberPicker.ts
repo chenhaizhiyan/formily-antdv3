@@ -1,74 +1,81 @@
 import { ISchema } from '@formily/vue'
-export const NumberPicker: ISchema = {
+
+export const InputNumber: ISchema = {
   type: 'object',
   properties: {
-    min: {
-      type: 'number',
+    decimalSeparator: {
+      type: 'string',
       'x-decorator': 'FormItem',
-      'x-component': 'InputNumber',
-      'x-component-props': {
-        
-      },
-    },
-    max: {
-      type: 'number',
-      'x-decorator': 'FormItem',
-      'x-component': 'InputNumber',
-      'x-component-props': {
-        
-      },
-    },
-    step: {
-      type: 'number',
-      'x-decorator': 'FormItem',
-      'x-component': 'InputNumber',
-      'x-component-props': {
-        
-      },
-    },
-    'step-strictly': {
-      type: 'boolean',
-      'x-decorator': 'FormItem',
-      'x-component': 'Switch',
+      'x-component': 'Input',
     },
     precision: {
       type: 'number',
       'x-decorator': 'FormItem',
       'x-component': 'InputNumber',
-      'x-component-props': {
-        
-      },
     },
-    size: {
-      default: 'default',
-      type: 'string',
-      enum: ['large', 'default', 'small', null],
+    max: {
+      type: 'number',
       'x-decorator': 'FormItem',
-      'x-component': 'Select',
-      'x-component-props': {
-        
-      },
+      'x-component': 'InputNumber',
     },
-    controls: {
-      default: true,
-      type: 'boolean',
+    min: {
+      type: 'number',
       'x-decorator': 'FormItem',
-      'x-component': 'Switch',
+      'x-component': 'InputNumber',
     },
-    // 'controls-position': {
-    //   type: 'string',
-    //   enum: ['right', null],
-    //   'x-decorator': 'FormItem',
-    //   'x-component': 'Select',
-    // },
+    step: {
+      type: 'number',
+      'x-decorator': 'FormItem',
+      'x-component': 'InputNumber',
+    },
     placeholder: {
       type: 'string',
       'x-decorator': 'FormItem',
       'x-component': 'Input',
+    },
+    size: {
+      type: 'string',
+      enum: ['large', 'small', 'middle', null],
+      'x-decorator': 'FormItem',
+      'x-component': 'Select',
       'x-component-props': {
-        
+        defaultValue: 'middle',
+      },
+    },
+    formatter: {
+      'x-decorator': 'FormItem',
+      'x-component': 'ValueInput',
+      'x-component-props': {
+        include: ['EXPRESSION'],
+      },
+    },
+    parser: {
+      'x-decorator': 'FormItem',
+      'x-component': 'ValueInput',
+      'x-component-props': {
+        include: ['EXPRESSION'],
+      },
+    },
+    stringMode: {
+      type: 'boolean',
+      'x-decorator': 'FormItem',
+      'x-component': 'Switch',
+    },
+    bordered: {
+      type: 'boolean',
+      'x-decorator': 'FormItem',
+      'x-component': 'Switch',
+      'x-component-props': {
+        defaultChecked: true,
+      },
+    },
+    keyboard: {
+      type: 'boolean',
+      'x-decorator': 'FormItem',
+      'x-component': 'Switch',
+      'x-component-props': {
+        defaultChecked: true,
       },
     },
   },
 }
-export const InputNumber = NumberPicker

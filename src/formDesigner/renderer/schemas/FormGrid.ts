@@ -4,11 +4,12 @@ export const FormGrid: ISchema & { GridColumn?: ISchema } = {
   type: 'object',
   properties: {
     minWidth: {
-      default: 100,
       type: 'number',
       'x-decorator': 'FormItem',
       'x-component': 'InputNumber',
-      'x-component-props': {},
+      'x-component-props': {
+        defaultValue: 100,
+      },
     },
     maxWidth: {
       type: 'number',
@@ -16,11 +17,12 @@ export const FormGrid: ISchema & { GridColumn?: ISchema } = {
       'x-component': 'InputNumber',
     },
     minColumns: {
-      default: 0,
       type: 'number',
       'x-decorator': 'FormItem',
       'x-component': 'InputNumber',
-      'x-component-props': {},
+      'x-component-props': {
+        defaultValue: 0,
+      },
     },
     maxColumns: {
       type: 'number',
@@ -36,30 +38,28 @@ export const FormGrid: ISchema & { GridColumn?: ISchema } = {
       },
     },
     columnGap: {
-      default: 10,
       type: 'number',
       'x-decorator': 'FormItem',
       'x-component': 'InputNumber',
-      'x-component-props': {},
+      'x-component-props': {
+        defaultValue: 10,
+      },
     },
     rowGap: {
-      default: 5,
       type: 'number',
       'x-decorator': 'FormItem',
       'x-component': 'InputNumber',
-      'x-component-props': {},
+      'x-component-props': {
+        defaultValue: 5,
+      },
     },
     colWrap: {
-      default: true,
       type: 'boolean',
       'x-decorator': 'FormItem',
       'x-component': 'Switch',
-      'x-component-props': {},
-    },
-    strictAutoFit: {
-      type: 'boolean',
-      'x-decorator': 'FormItem',
-      'x-component': 'Switch',
+      'x-component-props': {
+        defaultChecked: true,
+      },
     },
   },
 }
@@ -68,11 +68,12 @@ FormGrid.GridColumn = {
   type: 'object',
   properties: {
     gridSpan: {
-      default: 1,
       type: 'number',
       'x-decorator': 'FormItem',
       'x-component': 'InputNumber',
-      'x-component-props': {},
+      'x-component-props': {
+        defaultValue: 1,
+      },
     },
   },
 }

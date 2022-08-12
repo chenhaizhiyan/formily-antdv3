@@ -3,82 +3,73 @@ import { ISchema } from '@formily/vue'
 export const Cascader: ISchema = {
   type: 'object',
   properties: {
-    props: {
-      type: 'string',
+    allowClear: {
+      type: 'boolean',
       'x-decorator': 'FormItem',
-      'x-component': 'PreviewText.Input',
+      'x-component': 'Switch',
+      'x-component-props': {
+        defaultChecked: true,
+      },
     },
-    size: {
-      default: 'default',
-      type: 'string',
-      enum: ['large', 'default', 'small', null],
+    changeOnSelect: {
+      type: 'boolean',
       'x-decorator': 'FormItem',
-      'x-component': 'Select',
+      'x-component': 'Switch',
+    },
+    autoFocus: {
+      type: 'boolean',
+      'x-decorator': 'FormItem',
+      'x-component': 'Switch',
+    },
+    bordered: {
+      type: 'boolean',
+      'x-decorator': 'FormItem',
+      'x-component': 'Switch',
+      'x-component-props': {
+        defaultChecked: true,
+      },
+    },
+    displayRender: {
+      type: 'string',
+      'x-decorator': 'FormItem',
+      'x-component': 'ValueInput',
+      'x-component-props': {
+        include: ['EXPRESSION'],
+      },
+    },
+    fieldNames: {
+      type: 'string',
+      'x-decorator': 'FormItem',
+      'x-component': 'ValueInput',
+      'x-component-props': {
+        include: ['EXPRESSION'],
+      },
+    },
+    showSearch: {
+      type: 'boolean',
+      'x-decorator': 'FormItem',
+      'x-component': 'Switch',
+    },
+    notFoundContent: {
+      type: 'string',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+      'x-component-props': {
+        defaultValue: 'Not Found',
+      },
     },
     placeholder: {
       type: 'string',
       'x-decorator': 'FormItem',
       'x-component': 'Input',
-      'x-component-props': {
-        
-        clearable: true,
-      },
     },
-    clearable: {
-      type: 'boolean',
-      'x-decorator': 'FormItem',
-      'x-component': 'Switch',
-    },
-    'show-all-levels': {
-      type: 'boolean',
-      'x-decorator': 'FormItem',
-      'x-component': 'Switch',
-    },
-    'collapse-tags': {
-      type: 'boolean',
-      'x-decorator': 'FormItem',
-      'x-component': 'Switch',
-    },
-    separator: {
-      default: '/',
+    size: {
       type: 'string',
+      enum: ['large', 'small', 'middle', null],
       'x-decorator': 'FormItem',
-      'x-component': 'Input',
+      'x-component': 'Select',
       'x-component-props': {
-        
-        clearable: true,
-      },
-    },
-    filterable: {
-      type: 'boolean',
-      'x-decorator': 'FormItem',
-      'x-component': 'Switch',
-    },
-    'filter-method': {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'PreviewText.Input',
-    },
-    debounce: {
-      default: 300,
-      type: 'number',
-      'x-decorator': 'FormItem',
-      'x-component': 'InputNumber',
-      'x-component-props': {
-        
-      },
-    },
-    'before-filter': {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'PreviewText.Input',
-    },
-    'popper-class': {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
-        
+        defaultValue: 'middle',
       },
     },
   },

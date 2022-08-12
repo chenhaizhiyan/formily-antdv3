@@ -4,10 +4,32 @@ export const FormCollapse: ISchema & { CollapsePanel?: ISchema } = {
   type: 'object',
   properties: {
     accordion: {
-      default: true,
       type: 'boolean',
       'x-decorator': 'FormItem',
       'x-component': 'Switch',
+    },
+    collapsible: {
+      type: 'string',
+      enum: ['header', 'disabled'],
+      'x-decorator': 'FormItem',
+      'x-component': 'Radio.Group',
+      'x-component-props': {
+        defaultValue: 'header',
+        optionType: 'button',
+      },
+    },
+    ghost: {
+      type: 'boolean',
+      'x-decorator': 'FormItem',
+      'x-component': 'Switch',
+    },
+    bordered: {
+      type: 'boolean',
+      'x-decorator': 'FormItem',
+      'x-component': 'Switch',
+      'x-component-props': {
+        defaultChecked: true,
+      },
     },
   },
 }
@@ -15,17 +37,25 @@ export const FormCollapse: ISchema & { CollapsePanel?: ISchema } = {
 FormCollapse.CollapsePanel = {
   type: 'object',
   properties: {
-    title: {
+    collapsible: {
+      type: 'string',
+      enum: ['header', 'disabled'],
+      'x-decorator': 'FormItem',
+      'x-component': 'Radio.Group',
+      'x-component-props': {
+        defaultValue: 'header',
+        optionType: 'button',
+      },
+    },
+    header: {
       type: 'boolean',
       'x-decorator': 'FormItem',
       'x-component': 'Input',
-      'x-component-props': {  clearable: true },
     },
-    disabled: {
-      default: false,
+    extra: {
       type: 'boolean',
       'x-decorator': 'FormItem',
-      'x-component': 'Switch',
+      'x-component': 'Input',
     },
   },
 }
