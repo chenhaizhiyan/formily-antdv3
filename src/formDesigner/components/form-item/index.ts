@@ -1,8 +1,8 @@
+import type { Ref } from 'vue'
 import {
   ref,
   defineComponent,
-  onMounted,
-  Ref,
+  // onMounted,
   onBeforeUnmount,
   watch,
   provide,
@@ -10,25 +10,18 @@ import {
 } from 'vue'
 import { isVoidField } from '@formily/core'
 import { connect, mapProps } from '@formily/vue'
-
-// error: () => h('i', { class: 'el-icon-circle-close' }, {}),
-//   success: () => h('i', { class: 'el-icon-circle-check' }, {}),
-//   warning: () => h('i', { class: 'el-icon-warning-outline' }, {}),
-
+import { useFormLayout, FormLayoutShallowContext } from '../form-layout'
+import { composeExport, resolveComponent } from '../__builtins__/shared'
+import { stylePrefix } from '../__builtins__/configs'
+import type { Component } from 'vue'
+import { Tooltip, Popover } from 'ant-design-vue'
+import ResizeObserver from 'resize-observer-polyfill'
 import {
-  InfoCircleOutlined,
   CloseCircleOutlined,
   CheckCircleOutlined,
-  ExclamationCircleOutlined,
+  WarningOutlined,
+  InfoCircleOutlined,
 } from '@ant-design/icons-vue'
-import Icon from '@ant-design/icons-vue'
-
-import { useFormLayout, FormLayoutShallowContext } from '../form-layout'
-import { composeExport, resolveComponent, stylePrefix } from '../__builtins__'
-import { Component } from 'vue'
-import { Tooltip } from 'ant-design-vue'
-import ResizeObserver from 'resize-observer-polyfill'
-import { IFormGridProps, useGridColumn } from '../form-grid'
 
 export type FormItemProps = {
   className?: string
@@ -53,12 +46,17 @@ export type FormItemProps = {
   size?: 'small' | 'default' | 'large'
   extra?: string
   feedbackText?: string | Component
-  feedbackLayout?: 'loose' | 'terse' | 'popover' | 'none' | (string & {})
-  feedbackStatus?: 'error' | 'warning' | 'success' | 'pending' | (string & {})
+  feedbackLayout?: 'loose' | 'terse' | 'popover' | 'none' | (string & unknown)
+  feedbackStatus?:
+    | 'error'
+    | 'warning'
+    | 'success'
+    | 'pending'
+    | (string & unknown)
   tooltipLayout?: 'icon' | 'text'
   feedbackIcon?: string | Component
   asterisk?: boolean
-  gridSpan?: number | string
+  gridSpan?: number
   bordered?: boolean
   inset?: boolean
 }
@@ -78,7 +76,7 @@ const useOverflow = (containerRef: Ref<HTMLElement>) => {
     const container = containerRef.value
     const content = container.querySelector('label')
     const containerWidth = container.getBoundingClientRect().width
-    const contentWidth = content.getBoundingClientRect().width
+    const contentWidth = content?.getBoundingClientRect().width
 
     if (containerWidth !== 0) {
       if (contentWidth > containerWidth) {
@@ -111,10 +109,9 @@ const useOverflow = (containerRef: Ref<HTMLElement>) => {
 }
 
 const ICON_MAP = {
-  info: () => h(Icon, {}, { default: () => h(InfoCircleOutlined, {}, {}) }),
-  error: () => h(Icon, {}, { default: () => h(CloseCircleOutlined, {}, {}) }),
-  success: () => h(Icon, {}, { default: () => h(CheckCircleOutlined, {}, {}) }),
-  warning: () => h(Icon, {}, { default: () => h(ExclamationCircleOutlined, {}, {}) }),
+  error: () => h(CloseCircleOutlined),
+  success: () => h(CheckCircleOutlined),
+  warning: () => h(WarningOutlined),
 }
 
 export const FormBaseItem = defineComponent({
@@ -151,29 +148,29 @@ export const FormBaseItem = defineComponent({
     bordered: { default: true },
     inset: { default: false },
   },
-  setup(props, { slots, attrs }) {
+  setup(props, { slots }) {
     const active = ref(false)
     const deepLayoutRef = useFormLayout()
+
     const prefixCls = `${stylePrefix}-form-item`
 
-    const containerRef = ref<HTMLElement>(null)
+    const containerRef = ref(null)
     const overflow = useOverflow(containerRef)
 
-    provide(FormLayoutShallowContext, ref({}))
+    // onMounted(() => {
+    //   containerRef.value = refs.labelContainer
+    // })
+
+    provide(FormLayoutShallowContext, ref(null))
 
     return () => {
-      const gridColumn = useGridColumn(props.gridSpan as string)
       const gridStyles: Record<string, any> = {}
 
-      if (gridColumn) {
-        gridStyles.gridColumn = gridColumn
-      }
       const deepLayout = deepLayoutRef.value
       const {
         label,
         colon = deepLayout.colon ?? true,
         layout = deepLayout.layout ?? 'horizontal',
-        // TODO 拿不到 x-decorator-props 属性
         tooltip,
         labelStyle = {},
         labelWrap = deepLayout.labelWrap ?? false,
@@ -197,7 +194,7 @@ export const FormBaseItem = defineComponent({
         asterisk,
         bordered = deepLayout.bordered,
         inset = deepLayout.inset,
-      } = props as any
+      } = props as FormItemProps
       const labelAlign =
         deepLayout.layout === 'vertical'
           ? props.labelAlign ?? deepLayout.labelAlign ?? 'left'
@@ -222,12 +219,10 @@ export const FormBaseItem = defineComponent({
       const formatChildren =
         feedbackLayout === 'popover'
           ? h(
-              'el-popover',
+              Popover,
               {
-                props: {
-                  disabled: !feedbackText,
-                  placement: 'top',
-                },
+                visible: !feedbackText,
+                placement: 'top',
               },
               {
                 reference: () =>
@@ -245,9 +240,7 @@ export const FormBaseItem = defineComponent({
                     {
                       default: () => [
                         feedbackStatus &&
-                        ['error', 'success', 'warning'].includes(
-                          feedbackStatus as string
-                        )
+                        ['error', 'success', 'warning'].includes(feedbackStatus)
                           ? ICON_MAP[
                               feedbackStatus as 'error' | 'success' | 'warning'
                             ]()
@@ -266,7 +259,7 @@ export const FormBaseItem = defineComponent({
           'div',
           {
             class: `${prefixCls}-label-content`,
-            ref: 'containerRef',
+            ref: containerRef,
           },
           {
             default: () => [
@@ -318,12 +311,10 @@ export const FormBaseItem = defineComponent({
                 h(
                   Tooltip,
                   {
-                    props: {
-                      placement: 'top',
-                    },
+                    placement: 'top',
                   },
                   {
-                    default: ICON_MAP.info,
+                    default: () => [h(InfoCircleOutlined)],
                     content: () =>
                       h(
                         'div',
@@ -387,7 +378,14 @@ export const FormBaseItem = defineComponent({
               [`${prefixCls}-help-enter-active`]: true,
             },
           },
-          { default: () => [resolveComponent(feedbackText)] }
+          {
+            default: () => {
+              const text = Array.isArray(feedbackText)
+                ? feedbackText.join(',')
+                : feedbackText
+              return resolveComponent(text)
+            },
+          }
         )
 
       const renderExtra =
@@ -466,6 +464,7 @@ export const FormBaseItem = defineComponent({
           style: {
             ...gridStyles,
           },
+          'data-grid-span': props.gridSpan,
           class: {
             [`${prefixCls}`]: true,
             [`${prefixCls}-layout-${layout}`]: true,

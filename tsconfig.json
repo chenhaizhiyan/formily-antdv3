@@ -4,9 +4,10 @@
     "useDefineForClassFields": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "strict": true,
+    "strict": false,
     "jsx": "preserve",
     "sourceMap": true,
+    "allowJs": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
@@ -19,8 +20,8 @@
       "@": [
         "./src"
       ],
-      "@form-designer": [
-        "./src/formDesigner"
+      "@form-designer/*": [
+        "./src/formDesigner/*"
       ],
       "@/*": [
         "./src/*"
@@ -32,6 +33,10 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue"
+  ],
+  
+  "exclude": [
+    "node_modules",
   ],
   "references": [
     {

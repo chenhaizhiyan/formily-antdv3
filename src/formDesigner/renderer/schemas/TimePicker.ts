@@ -1,133 +1,124 @@
-import { ISchema } from '@formily/vue'
+import { ISchema } from '@formily/react'
 
 export const CommonTimePickerAPI = {
-  editable: {
+  allowClear: {
     type: 'boolean',
     'x-decorator': 'FormItem',
     'x-component': 'Switch',
-  },
-  clearable: {
-    type: 'boolean',
-    'x-decorator': 'FormItem',
-    'x-component': 'Switch',
-  },
-  size: {
-    default: 'default',
-    type: 'string',
-    enum: ['large', 'default', 'small', null],
-    'x-decorator': 'FormItem',
-    'x-component': 'Select',
     'x-component-props': {
-      
-      clearable: true,
+      defaultChecked: true,
+    },
+  },
+  autoFocus: {
+    type: 'boolean',
+    'x-decorator': 'FormItem',
+    'x-component': 'Switch',
+  },
+  bordered: {
+    type: 'boolean',
+    'x-decorator': 'FormItem',
+    'x-component': 'Switch',
+    'x-component-props': {
+      defaultChecked: true,
+    },
+  },
+  clearText: {
+    type: 'string',
+    'x-decorator': 'FormItem',
+    'x-component': 'Input',
+  },
+  disabledHours: {
+    'x-decorator': 'FormItem',
+    'x-component': 'ValueInput',
+    'x-component-props': {
+      include: ['EXPRESSION'],
+    },
+  },
+  disabledMinutes: {
+    'x-decorator': 'FormItem',
+    'x-component': 'ValueInput',
+    'x-component-props': {
+      include: ['EXPRESSION'],
+    },
+  },
+  disabledSeconds: {
+    'x-decorator': 'FormItem',
+    'x-component': 'ValueInput',
+    'x-component-props': {
+      include: ['EXPRESSION'],
+    },
+  },
+  hideDisabledOptions: {
+    type: 'boolean',
+    'x-decorator': 'FormItem',
+    'x-component': 'Switch',
+  },
+  inputReadOnly: {
+    type: 'boolean',
+    'x-decorator': 'FormItem',
+    'x-component': 'Switch',
+  },
+  showNow: {
+    type: 'boolean',
+    'x-decorator': 'FormItem',
+    'x-component': 'Switch',
+  },
+  use12Hours: {
+    type: 'boolean',
+    'x-decorator': 'FormItem',
+    'x-component': 'Switch',
+  },
+  hourStep: {
+    type: 'number',
+    'x-decorator': 'FormItem',
+    'x-component': 'NumberPicker',
+    'x-component-props': {
+      defaultValue: 1,
+    },
+  },
+  minuteStep: {
+    type: 'number',
+    'x-decorator': 'FormItem',
+    'x-component': 'NumberPicker',
+    'x-component-props': {
+      defaultValue: 1,
+    },
+  },
+  secondStep: {
+    type: 'number',
+    'x-decorator': 'FormItem',
+    'x-component': 'NumberPicker',
+    'x-component-props': {
+      defaultValue: 1,
     },
   },
   placeholder: {
     type: 'string',
     'x-decorator': 'FormItem',
     'x-component': 'Input',
-    'x-component-props': {
-      
-      clearable: true,
-    },
   },
-  'start-placeholder': {
+  size: {
     type: 'string',
-    'x-decorator': 'FormItem',
-    'x-component': 'Input',
-    'x-component-props': {
-      
-      clearable: true,
-    },
-  },
-  'end-placeholder': {
-    type: 'string',
-    'x-decorator': 'FormItem',
-    'x-component': 'Input',
-    'x-component-props': {
-      
-      clearable: true,
-    },
-  },
-  'is-range': {
-    type: 'boolean',
-    'x-decorator': 'FormItem',
-    'x-component': 'Switch',
-  },
-  'arrow-control': {
-    type: 'boolean',
-    'x-decorator': 'FormItem',
-    'x-component': 'Switch',
-  },
-  align: {
-    default: 'left',
-    type: 'string',
-    enum: ['left', 'center', 'right'],
+    enum: ['large', 'small', 'middle', null],
     'x-decorator': 'FormItem',
     'x-component': 'Select',
-    'x-component-props': {
-      
-      clearable: true,
-    },
   },
-  'popper-class': {
+  format: {
     type: 'string',
     'x-decorator': 'FormItem',
     'x-component': 'Input',
     'x-component-props': {
-      
-      clearable: true,
-    },
-  },
-  'picker-options': {
-    type: 'string',
-    'x-decorator': 'FormItem',
-    'x-component': 'PreviewText.Input',
-  },
-  'range-separator': {
-    type: 'string',
-    'x-decorator': 'FormItem',
-    'x-component': 'Input',
-    'x-component-props': {
-      
-      clearable: true,
-    },
-  },
-  'default-value': {
-    type: 'string',
-    'x-decorator': 'FormItem',
-    'x-component': 'DatePicker',
-  },
-  'value-format': {
-    type: 'string',
-    'x-decorator': 'FormItem',
-    'x-component': 'Input',
-    'x-component-props': {
-      
-      clearable: true,
-    },
-  },
-  'prefix-icon': {
-    type: 'string',
-    'x-decorator': 'FormItem',
-    'x-component': 'Input',
-    'x-component-props': {
-      
-      clearable: true,
-    },
-  },
-  'clear-icon': {
-    type: 'string',
-    'x-decorator': 'FormItem',
-    'x-component': 'Input',
-    'x-component-props': {
-      
-      clearable: true,
+      placeholder: 'YYYY-MM-DD',
     },
   },
 }
 
 export const TimePicker: ISchema & { RangePicker?: ISchema } = {
+  type: 'object',
+  properties: CommonTimePickerAPI,
+}
+
+TimePicker.RangePicker = {
   type: 'object',
   properties: CommonTimePickerAPI,
 }

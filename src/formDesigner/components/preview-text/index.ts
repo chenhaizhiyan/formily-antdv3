@@ -1,5 +1,5 @@
-import { defineComponent, computed } from 'vue'
-import { h, useField } from '@formily/vue'
+import { defineComponent, computed, h } from 'vue'
+import { useField } from '@formily/vue'
 import { isArr, isValid } from '@formily/shared'
 import {
   createContext,
@@ -8,15 +8,16 @@ import {
   composeExport,
 } from '../__builtins__/shared'
 import { stylePrefix } from '../__builtins__/configs'
-import type { Input as InputProps } from 'ant-design-vue/types/input/input'
-import type { Select as SelectProps } from 'ant-design-vue/types/select/select'
+import type { InputProps } from 'ant-design-vue/lib/input'
+import type { SelectProps } from 'ant-design-vue/lib/select'
 import type {
-  Cascader as CascaderProps,
+  CascaderProps,
   CascaderOptionType,
-} from 'ant-design-vue/types/cascader'
-import type { TimePicker as TimePickerProps } from 'ant-design-vue/types/time-picker'
-import type { DatePicker as DatePickerProps } from 'ant-design-vue/types/date-picker/date-picker'
-import type { RangePicker as RangePickerProps } from 'ant-design-vue/types/date-picker/range-picker'
+} from 'ant-design-vue/lib/cascader'
+import type { TimePickerProps } from 'ant-design-vue/lib/time-picker'
+import type { TimeRangePickerProps } from 'ant-design-vue/lib/time-picker'
+import type { DatePickerProps } from 'ant-design-vue/lib/date-picker'
+import type { RangePickerProps } from 'ant-design-vue/lib/date-picker'
 
 import { Tag } from 'ant-design-vue'
 
@@ -41,10 +42,10 @@ export const usePlaceholder = (value?: any) => {
 
 const Select = observer(
   // eslint-disable-next-line vue/one-component-per-file
-  defineComponent<SelectProps>({
+  defineComponent({
     name: 'PreviewTextSelect',
     props: [],
-    setup(_props, { attrs }) {
+    setup(_props: SelectProps, { attrs }) {
       const fieldRef = useField<Field>()
       const field = fieldRef.value
       const props = attrs as unknown as SelectProps
@@ -168,10 +169,9 @@ export type PreviewCascaderProps = CascaderProps & {
 }
 const Cascader = observer(
   // eslint-disable-next-line vue/one-component-per-file
-  defineComponent<PreviewCascaderProps>({
+  defineComponent({
     name: 'PreviewTextCascader',
-    props: [],
-    setup(_props, { attrs }) {
+    setup(_props: PreviewCascaderProps, { attrs }) {
       const fieldRef = useField<Field>()
       const field = fieldRef.value
       const props = attrs as unknown as PreviewCascaderProps
@@ -268,9 +268,38 @@ const TimePicker = defineComponent<TimePickerProps>({
 })
 
 // eslint-disable-next-line vue/one-component-per-file
-const DatePicker = defineComponent<DatePickerProps>({
-  name: 'PreviewTextDatePicker',
+const TimeRangePicker = defineComponent<TimeRangePickerProps>({
+  name: 'PreviewTextTimeRangePicker',
   setup(_props, { attrs }) {
+    const props = attrs as unknown as TimeRangePickerProps
+    const placeholder = usePlaceholder()
+    const getLabels = () => {
+      const labels = formatMomentValue(
+        props.value,
+        props.format,
+        placeholder.value
+      )
+      return isArr(labels) ? labels.join('~') : labels
+    }
+    return () => {
+      return h(
+        'div',
+        {
+          class: [prefixCls],
+          style: attrs.style,
+        },
+        {
+          default: () => getLabels() as any,
+        }
+      )
+    }
+  },
+})
+
+// eslint-disable-next-line vue/one-component-per-file
+const DatePicker = defineComponent({
+  name: 'PreviewTextDatePicker',
+  setup(_props: DatePickerProps, { attrs }) {
     const props = attrs as unknown as DatePickerProps
     const placeholder = usePlaceholder()
     const getLabels = () => {
@@ -297,9 +326,9 @@ const DatePicker = defineComponent<DatePickerProps>({
 })
 
 // eslint-disable-next-line vue/one-component-per-file
-const DateRangePicker = defineComponent<RangePickerProps>({
+const DateRangePicker = defineComponent({
   name: 'PreviewTextDatePicker',
-  setup(_props, { attrs }) {
+  setup(_props: RangePickerProps, { attrs }) {
     const props = attrs as unknown as RangePickerProps
     const placeholder = usePlaceholder()
     const getLabels = () => {
@@ -332,6 +361,7 @@ export const PreviewText = composeExport(Text, {
   DatePicker,
   DateRangePicker,
   TimePicker,
+  TimeRangePicker,
   Placeholder: PlaceholderContext.Provider,
   usePlaceholder,
 })

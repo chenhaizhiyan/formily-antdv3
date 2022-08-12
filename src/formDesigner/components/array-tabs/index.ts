@@ -1,22 +1,25 @@
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, h } from 'vue'
 import { observer } from '@formily/reactive-vue'
 import type { ArrayField } from '@formily/core'
-import { h, useField, useFieldSchema, RecursionField } from '@formily/vue'
+import { useField, useFieldSchema, RecursionField } from '@formily/vue'
 import { stylePrefix } from '../__builtins__/configs'
 import { Tabs, Badge } from 'ant-design-vue'
 
-import type { Tabs as TabsProps } from 'ant-design-vue/types/tabs/tabs'
+import type { TabsProps } from 'ant-design-vue/lib/tabs'
 
 export const ArrayTabs = observer(
   defineComponent<TabsProps>({
     name: 'ArrayTabs',
-    setup(props, { listeners }) {
+    /**
+     * 这里加上emit事件，解决[Vue warn]: Invalid prop: type check failed for prop "onChange". Expected Function, got Array
+     */
+    emits: ['change'],
+    setup(props, { attrs }) {
       const fieldRef = useField<ArrayField>()
       const schemaRef = useFieldSchema()
 
       const prefixCls = `${stylePrefix}-array-tabs`
       const activeKey = ref('tab-0')
-
       return () => {
         const field = fieldRef.value
         const schema = schemaRef.value
@@ -53,9 +56,7 @@ export const ArrayTabs = observer(
               Badge,
               {
                 class: `${prefixCls}-errors-badge`,
-                props: {
-                  count: errors.length,
-                },
+                count: errors.length,
               },
               {
                 default: () => [tab],
@@ -75,23 +76,15 @@ export const ArrayTabs = observer(
               Tabs.TabPane,
               {
                 key,
-                props: {
-                  closable: index !== 0,
-                  name: key,
-                },
+                closable: index !== 0,
+                name: key,
               },
               {
                 default: () =>
-                  h(
-                    RecursionField,
-                    {
-                      props: {
-                        schema: items,
-                        name: index,
-                      },
-                    },
-                    {}
-                  ),
+                  h(RecursionField, {
+                    schema: items,
+                    name: index,
+                  }),
                 tab: () => [badgedTab(index)],
               }
             )
@@ -100,19 +93,15 @@ export const ArrayTabs = observer(
         return h(
           Tabs,
           {
-            props: {
-              ...props,
-              activeKey: activeKey.value,
-              type: 'editable-card',
+            ...props,
+            ...attrs,
+            activeKey: activeKey.value,
+            type: 'editable-card',
+            onChange: (key) => {
+              activeKey.value = key as string
             },
-            on: {
-              ...listeners,
-              change: (key) => {
-                activeKey.value = key
-              },
-              edit: (key, action) => {
-                onEdit(key, action)
-              },
+            onEdit: (key, action) => {
+              onEdit(key, action)
             },
           },
           {

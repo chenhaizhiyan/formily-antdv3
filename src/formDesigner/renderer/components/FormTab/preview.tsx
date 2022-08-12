@@ -79,8 +79,8 @@ export const FormTab: DnFC<DefineComponent<any>> = composeExport(
               <Tabs
                 {...{
                   ...attrs,
-                  modelValue: getCorrectActiveKey(activeKey!, tabs),
-                  "onUpdate:modelValue": (id: any) => {
+                  activeKey: getCorrectActiveKey(activeKey!, tabs),
+                  "onUpdate:activeKey": (id: any) => {
                     setActiveKey(id)
                   }
                 }}
@@ -90,14 +90,15 @@ export const FormTab: DnFC<DefineComponent<any>> = composeExport(
                   const nodeId = {
                     [designer.props.nodeIdAttrName]: tab.id,
                   }
+                  console.log('tab:', tab)
                   return (
                     <TabPane
                       {...nodeId}
                       style={props.style}
-                      name={tab.id}
+                      // name={tab.id}
                       key={tab.id}
                       v-slots={{
-                        label: () => {
+                        tab: () => {
                           return (
                             <span
                               data-content-editable="x-component-props.label"

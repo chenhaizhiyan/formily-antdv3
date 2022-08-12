@@ -1,6 +1,7 @@
-import { defineComponent } from 'vue'
+import type { DefineComponent } from 'vue'
+import { defineComponent, h } from 'vue'
 import type { ArrayField } from '@formily/core'
-import { useField, useFieldSchema, RecursionField, h } from '@formily/vue'
+import { useField, useFieldSchema, RecursionField } from '@formily/vue'
 import { observer } from '@formily/reactive-vue'
 import type { ISchema } from '@formily/json-schema'
 import { stylePrefix } from '../__builtins__/configs'
@@ -42,34 +43,24 @@ const ArrayItemsInner = observer(
               ArrayBase.Item,
               {
                 key,
-                props: {
-                  index,
-                  record: item,
-                },
+                index,
+                record: item,
               },
               {
                 default: () =>
                   h(
-                    SlickItem,
+                    SlickItem as DefineComponent,
                     {
                       class: [`${prefixCls}-item-inner`],
-                      props: {
-                        index,
-                      },
+                      index,
                       key,
                     },
                     {
                       default: () =>
-                        h(
-                          RecursionField,
-                          {
-                            props: {
-                              schema: items,
-                              name: index,
-                            },
-                          },
-                          {}
-                        ),
+                        h(RecursionField, {
+                          schema: items,
+                          name: index,
+                        }),
                     }
                   ),
               }
@@ -77,41 +68,33 @@ const ArrayItemsInner = observer(
           })
 
           return h(
-            SlickList,
+            SlickList as DefineComponent,
             {
               class: [`${prefixCls}-list`],
-              props: {
-                useDragHandle: true,
-                lockAxis: 'y',
-                helperClass: `${prefixCls}-sort-helper`,
-                value: [],
-              },
-              on: {
-                'sort-end': ({ oldIndex, newIndex }) => {
-                  if (Array.isArray(keyMap)) {
-                    keyMap.splice(newIndex, 0, keyMap.splice(oldIndex, 1)[0])
-                  }
-                  field.move(oldIndex, newIndex)
-                },
+              useDragHandle: true,
+              axis: 'y',
+              helperClass: `${prefixCls}-sort-helper`,
+              list: dataSource,
+              onSortEnd({ oldIndex, newIndex }) {
+                if (Array.isArray(keyMap)) {
+                  keyMap.splice(newIndex, 0, keyMap.splice(oldIndex, 1)[0])
+                }
+                field.move(oldIndex, newIndex)
               },
             },
-            { default: () => items }
+            {
+              default: () => items,
+            }
           )
         }
 
         const renderAddition = () => {
           return schema.reduceProperties((addition, schema, key) => {
             if (isAdditionComponent(schema)) {
-              return h(
-                RecursionField,
-                {
-                  props: {
-                    schema,
-                    name: key,
-                  },
-                },
-                {}
-              )
+              return h(RecursionField, {
+                schema,
+                name: key,
+              })
             }
             return addition
           }, null)
@@ -120,9 +103,7 @@ const ArrayItemsInner = observer(
         return h(
           ArrayBase,
           {
-            props: {
-              keyMap,
-            },
+            keyMap,
           },
           {
             default: () =>
@@ -130,10 +111,8 @@ const ArrayItemsInner = observer(
                 'div',
                 {
                   class: [prefixCls],
-                  on: {
-                    // eslint-disable-next-line @typescript-eslint/no-empty-function
-                    change: () => {},
-                  },
+                  // eslint-disable-next-line @typescript-eslint/no-empty-function
+                  onChange: () => {},
                 },
                 {
                   default: () => [renderItems(), renderAddition()],
@@ -146,24 +125,20 @@ const ArrayItemsInner = observer(
   })
 )
 
-const ArrayItemsItem = defineComponent<IArrayItemsItemProps>({
+const ArrayItemsItem = defineComponent({
   name: 'ArrayItemsItem',
   props: ['type'],
-  setup(props, { attrs, slots }) {
+  setup(props: IArrayItemsItemProps, { attrs, slots }) {
     const prefixCls = `${stylePrefix}-array-items`
 
     return () =>
       h(
         'div',
         {
+          ...attrs,
           class: [`${prefixCls}-${props.type || 'card'}`],
-          attrs: {
-            ...attrs,
-          },
-          on: {
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            change: () => {},
-          },
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          onChange: () => {},
         },
         slots
       )

@@ -113,7 +113,7 @@ export const ArrayCards: DnFC<VNode> = composeExport(
                         return (
                             <ArrayBase disabled>
                                 <ArrayBase.Item index={0} record={null}>
-                                    <Card class={cls('antdv-formily-array-cards-item')} header={props.title} {...props} v-slots={{ header: renderHeader }}>
+                                    <Card class={cls('antdv-formily-array-cards-item')} title={props.title} {...props} v-slots={{ header: renderHeader }}>
                                         <div {...createNodeId(designer, ensureObjectItemsNode(node).id)}>
                                             {children.length ? children.map(node => <TreeNodeWidget key={node.id} node={node} />) : <DroppableWidget key={node.id} node={node} />}
                                         </div>

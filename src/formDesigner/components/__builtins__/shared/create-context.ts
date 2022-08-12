@@ -1,17 +1,10 @@
-import type { Component } from 'vue'
+import type { DefineComponent } from 'vue'
 import type { InjectionKey, Ref } from 'vue'
-import {
-  defineComponent,
-  provide,
-  inject,
-  readonly,
-  ref,
-  toRef,
-} from 'vue'
+import { defineComponent, provide, inject, readonly, ref, toRef } from 'vue'
 
 export type CreateContext<T> = {
-  Provider: Component
-  Consumer: Component
+  Provider: DefineComponent
+  Consumer: DefineComponent
   injectKey: InjectionKey<Ref<T>>
 }
 
@@ -30,7 +23,7 @@ export const createContext = <T>(defaultValue?: T): CreateContext<T> => {
         },
       },
       setup(props, { slots }) {
-        const value = toRef(props, 'value')
+        const value: any = toRef(props, 'value' as never)
         provide(injectKey, readonly(value))
 
         return () => slots?.default?.()

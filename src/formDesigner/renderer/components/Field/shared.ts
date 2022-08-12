@@ -6,7 +6,7 @@ import { ISchema } from '@formily/json-schema'
 // } from '../../../setters'
 import {
 //   ReactionsSetter,
-//   DataSourceSetter,
+  DataSourceSetter,
   ValidatorSetter,
 } from '@form-designer/setters'
 import { AllSchemas } from '../../schemas'
@@ -134,13 +134,8 @@ export const createFieldSchema = (
             'x-component': 'ValueInput',
           },
           enum: {
-            //DataSourceSetter
-            'x-display': 'hidden',
             'x-decorator': 'FormItem',
-            'x-component': 'ValueInput',
-            'x-component-props': {
-              include: ['EXPRESSION'],
-            },
+            'x-component': DataSourceSetter,
           },
           'x-reactions': {
             'x-display': 'hidden',
@@ -162,7 +157,7 @@ export const createFieldSchema = (
           },
         },
       },
-      // ...createComponentSchema(component, decorator),
+      ...createComponentSchema(component, decorator),
     },
   }
 }

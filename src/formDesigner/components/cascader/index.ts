@@ -1,11 +1,13 @@
-import { connect, mapProps, mapReadPretty, h } from '@formily/vue'
-import { Cascader as AntdCascader,  } from 'ant-design-vue'
-import Icon from '@ant-design/icons-vue'
+import { connect, mapProps, mapReadPretty } from '@formily/vue'
+import { Cascader as AntdCascader } from 'ant-design-vue'
 import { PreviewText } from '../preview-text'
+import { h } from 'vue'
+import { LoadingOutlined } from '@ant-design/icons-vue'
+import type { CascaderProps } from 'ant-design-vue/lib/cascader'
 
 export const Cascader = connect(
   AntdCascader,
-  mapProps(
+  mapProps<CascaderProps>(
     {
       dataSource: 'options',
     },
@@ -14,7 +16,7 @@ export const Cascader = connect(
         ...props,
         suffixIcon:
           field?.['loading'] || field?.['validating']
-            ? h(Icon, { props: { type: 'loading' } }, {})
+            ? h(LoadingOutlined)
             : props.suffixIcon,
       }
     }

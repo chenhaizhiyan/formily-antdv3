@@ -1,166 +1,118 @@
-import { ISchema } from '@formily,vue'
+import { ISchema } from '@formily/vue'
+
+const CommonDatePickerAPI = {
+  allowClear: {
+    type: 'boolean',
+    'x-decorator': 'FormItem',
+    'x-component': 'Switch',
+    'x-component-props': {
+      defaultChecked: true,
+    },
+  },
+  autoFocus: {
+    type: 'boolean',
+    'x-decorator': 'FormItem',
+    'x-component': 'Switch',
+  },
+  bordered: {
+    type: 'boolean',
+    'x-decorator': 'FormItem',
+    'x-component': 'Switch',
+    'x-component-props': {
+      defaultChecked: true,
+    },
+  },
+  disabledTime: {
+    'x-decorator': 'FormItem',
+    'x-component': 'ValueInput',
+    'x-component-props': {
+      include: ['EXPRESSION'],
+    },
+  },
+  disabledDate: {
+    'x-decorator': 'FormItem',
+    'x-component': 'ValueInput',
+    'x-component-props': {
+      include: ['EXPRESSION'],
+    },
+  },
+  inputReadOnly: {
+    type: 'boolean',
+    'x-decorator': 'FormItem',
+    'x-component': 'Switch',
+  },
+  placeholder: {
+    type: 'string',
+    'x-decorator': 'FormItem',
+    'x-component': 'Input',
+  },
+  size: {
+    type: 'string',
+    enum: ['large', 'small', 'middle', null],
+    'x-decorator': 'FormItem',
+    'x-component': 'Select',
+    'x-component-props': {
+      defaultValue: 'middle',
+    },
+  },
+  format: {
+    type: 'string',
+    'x-decorator': 'FormItem',
+    'x-component': 'Input',
+    'x-component-props': {
+      placeholder: 'YYYY-MM-DD',
+    },
+  },
+}
 
 export const DatePicker: ISchema & { RangePicker?: ISchema } = {
   type: 'object',
   properties: {
-    editable: {
+    picker: {
+      type: 'string',
+      enum: ['time', 'date', 'month', 'year', 'quarter', 'decade'],
+      'x-decorator': 'FormItem',
+      'x-component': 'Select',
+      'x-component-props': {
+        defaultValue: 'date',
+      },
+    },
+    ...CommonDatePickerAPI,
+    showNow: {
       type: 'boolean',
       'x-decorator': 'FormItem',
       'x-component': 'Switch',
     },
-    clearable: {
+    showTime: {
       type: 'boolean',
       'x-decorator': 'FormItem',
       'x-component': 'Switch',
     },
-    size: {
-      default: 'default',
-      type: 'string',
-      enum: ['large', 'default', 'small', null],
-      'x-decorator': 'FormItem',
-      'x-component': 'Select',
-      'x-component-props': {
-
-        clearable: true,
-      },
-    },
-    placeholder: {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
-
-        clearable: true,
-      },
-    },
-    'start-placeholder': {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
-
-        clearable: true,
-      },
-    },
-    'end-placeholder': {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
-
-        clearable: true,
-      },
-    },
-    type: {
-      default: 'date',
-      type: 'string',
-      enum: [
-        'year',
-        'month',
-        'date',
-        'dates',
-        'week',
-        'datetime',
-        'datetimerange',
-        'daterange',
-        'monthrange',
-      ],
-      'x-index': 0,
-      'x-decorator': 'FormItem',
-      'x-component': 'Select',
-      'x-component-props': {
-        clearable: true,
-      },
-    },
-    format: {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
-
-        clearable: true,
-      },
-    },
-    align: {
-      default: 'left',
-      type: 'string',
-      enum: ['left', 'center', 'right'],
-      'x-decorator': 'FormItem',
-      'x-component': 'Select',
-      'x-component-props': {
-
-        clearable: true,
-      },
-    },
-    'popper-class': {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
-
-        clearable: true,
-      },
-    },
-    'picker-options': {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'PreviewText.Input',
-    },
-    'range-separator': {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
-        clearable: true,
-      },
-    },
-    'default-value': {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'DatePicker',
-      'x-component-props': {
-        clearable: false
-      }
-    },
-    'default-time': {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'TimePicker',
-      'x-component-props': {
-        clearable: false
-      }
-    },
-    'value-format': {
-      default: 'x',
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
-        clearable: true,
-      },
-    },
-    'unlink-panels': {
+    showToday: {
       type: 'boolean',
       'x-decorator': 'FormItem',
       'x-component': 'Switch',
     },
-    'prefix-icon': {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
+  },
+}
 
-        clearable: true,
+DatePicker.RangePicker = {
+  type: 'object',
+  properties: {
+    picker: {
+      type: 'string',
+      enum: ['time', 'date', 'month', 'year', 'decade'],
+      'x-decorator': 'FormItem',
+      'x-component': 'Select',
+      'x-component-props': {
+        defaultValue: 'date',
       },
     },
-    'clear-icon': {
-      type: 'string',
+    ...CommonDatePickerAPI,
+    showTime: {
+      type: 'boolean',
       'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
-
-        clearable: true,
-      },
+      'x-component': 'Switch',
     },
   },
 }

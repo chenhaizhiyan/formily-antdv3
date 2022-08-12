@@ -1,18 +1,17 @@
 import { Collapse, Badge } from 'ant-design-vue'
 import { model, markRaw } from '@formily/reactive'
-import type { Collapse as CollapseProps } from 'ant-design-vue/types/collapse/collapse'
-import type { CollapsePanel as CollapsePanelProps } from 'ant-design-vue/types/collapse/collapse-panel'
+import type { CollapseProps } from 'ant-design-vue/lib/collapse'
+import type { CollapsePanelProps } from 'ant-design-vue/lib/collapse/CollapsePanel'
 import {
   useField,
   useFieldSchema,
   RecursionField,
-  h,
-  Fragment,
+  FragmentComponent,
 } from '@formily/vue'
 import { observer } from '@formily/reactive-vue'
 import type { Schema, SchemaKey } from '@formily/json-schema'
-import type { PropType } from 'vue-demi'
-import { computed, defineComponent } from 'vue'
+import type { PropType } from 'vue'
+import { computed, defineComponent, h } from 'vue'
 import { toArr } from '@formily/shared'
 import { composeExport, stylePrefix } from '../__builtins__'
 import type { GeneralField } from '@formily/core'
@@ -97,7 +96,7 @@ const createFormCollapse = (defaultActiveKeys?: ActiveKeys) => {
 
 const _FormCollapse = observer(
   // eslint-disable-next-line vue/one-component-per-file
-  defineComponent<IFormCollapseProps>({
+  defineComponent({
     inheritAttrs: false,
     props: {
       // eslint-disable-next-line vue/require-default-prop
@@ -107,7 +106,8 @@ const _FormCollapse = observer(
         type: [String, Number],
       },
     },
-    setup(props, { attrs, emit }) {
+    emits: ['input'],
+    setup(props: IFormCollapseProps, { attrs, emit }) {
       const field = useField()
       const schema = useFieldSchema()
       const prefixCls = `${stylePrefix}-form-collapse`
@@ -133,9 +133,7 @@ const _FormCollapse = observer(
             Badge,
             {
               class: [`${prefixCls}-errors-badge`],
-              props: {
-                count: errors.length,
-              },
+              count: errors.length,
             },
             { default: () => [header] }
           )
@@ -150,15 +148,11 @@ const _FormCollapse = observer(
           Collapse,
           {
             class: prefixCls,
-            props: {
-              ...props,
-              activeKey,
-            },
-            on: {
-              change: (key: string | string[]) => {
-                emit('input', key)
-                _formCollapse.value.setActiveKeys(key)
-              },
+            ...props,
+            activeKey,
+            onChange: (key: string | string[]) => {
+              emit('input', key)
+              _formCollapse.value.setActiveKeys(key)
             },
           },
           {
@@ -169,19 +163,15 @@ const _FormCollapse = observer(
                   Collapse.Panel,
                   {
                     key: name,
-                    props: {
-                      ...restProps,
-                      name,
-                      forceRender: true,
-                    },
+                    ...restProps,
+                    name,
+                    forceRender: true,
                   },
                   {
-                    default: () => [
-                      h(RecursionField, { props: { schema, name } }, {}),
-                    ],
+                    default: () => [h(RecursionField, { schema, name }, {})],
                     header: () =>
                       h(
-                        Fragment,
+                        FragmentComponent,
                         {},
                         {
                           default: () => badgedHeader(name, header),
@@ -202,7 +192,7 @@ const _FormCollapse = observer(
 export const CollapsePanel = defineComponent<CollapsePanelProps>({
   name: 'FormCollapsePanel',
   setup(props, { slots }) {
-    return () => h(Fragment, {}, slots)
+    return () => h(FragmentComponent, {}, slots)
   },
 })
 

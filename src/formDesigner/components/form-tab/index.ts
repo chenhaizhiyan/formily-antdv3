@@ -1,19 +1,17 @@
-import { defineComponent, reactive, computed } from 'vue'
+import { defineComponent, reactive, computed, h } from 'vue'
 import { observer } from '@formily/reactive-vue'
 import { model } from '@formily/reactive'
 import {
-  h,
   useField,
   useFieldSchema,
   RecursionField,
-  Fragment,
+  FragmentComponent,
 } from '@formily/vue'
 import type { Schema, SchemaKey } from '@formily/json-schema'
 import { Tabs, Badge } from 'ant-design-vue'
 import { stylePrefix } from '../__builtins__/configs'
 
-import type { Tabs as TabsProps } from 'ant-design-vue/types/tabs/tabs'
-import type { TabPane as TabPaneProps } from 'ant-design-vue/types/tabs/tab-pane'
+import type { TabsProps, TabPaneProps } from 'ant-design-vue/lib/tabs'
 
 import { composeExport } from '../__builtins__/shared'
 
@@ -65,10 +63,11 @@ const createFormTab = (defaultActiveKey?: string) => {
 
 const FormTabInner = observer(
   // eslint-disable-next-line vue/one-component-per-file
-  defineComponent<IFormTabProps>({
+  defineComponent({
     name: 'FormTab',
+    inheritAttrs: false,
     props: ['formTab'],
-    setup(props, { attrs, listeners }) {
+    setup(props: IFormTabProps, { attrs }) {
       const field = useField().value
       const formTabRef = computed(() => props.formTab ?? createFormTab())
 
@@ -90,15 +89,13 @@ const FormTabInner = observer(
                 Badge,
                 {
                   class: [`${prefixCls}-errors-badge`],
-                  props: {
-                    count: errors.length,
-                    size: 'small',
-                  },
+                  count: errors.length,
+                  size: 'small',
                 },
-                { default: () => props.tab }
+                { default: () => props.label }
               )
           }
-          return props.tab
+          return props.label
         }
 
         const getTabs = (tabs) => {
@@ -106,22 +103,18 @@ const FormTabInner = observer(
             return h(
               TabPane,
               {
+                ...props,
                 key: name,
-                props: {
-                  ...props,
-                  tab: badgedTab(name, props),
-                  forceRender: true,
-                },
+                tab: badgedTab(name, props),
+                forceRender: true,
               },
               {
                 default: () => [
                   h(
                     RecursionField,
                     {
-                      props: {
-                        schema,
-                        name,
-                      },
+                      schema,
+                      name,
                     },
                     {}
                   ),
@@ -133,18 +126,12 @@ const FormTabInner = observer(
         return h(
           Tabs,
           {
-            class: [prefixCls],
-            style: attrs.style,
-            props: {
-              ...attrs,
-              activeKey: activeKey,
-            },
-            on: {
-              ...listeners,
-              change: (key) => {
-                listeners.change?.(key)
-                formTab.setActiveKey?.(key)
-              },
+            ...attrs,
+            class: [prefixCls, attrs.class],
+            activeKey: activeKey,
+            onChange: (key) => {
+              props?.onChange?.(key)
+              formTab.setActiveKey?.(key as string)
             },
           },
           {
@@ -159,8 +146,9 @@ const FormTabInner = observer(
 // eslint-disable-next-line vue/one-component-per-file
 const FormTabPane = defineComponent<IFormTabPaneProps>({
   name: 'FormTabPane',
+  inheritAttrs: false,
   setup(_props, { slots }) {
-    return () => h(Fragment, {}, slots)
+    return () => h(FragmentComponent, {}, slots)
   },
 })
 

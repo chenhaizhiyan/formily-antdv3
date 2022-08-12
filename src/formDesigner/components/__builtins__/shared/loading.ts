@@ -1,5 +1,5 @@
 import { message } from 'ant-design-vue'
-import type { MessageType } from 'ant-design-vue/types/message'
+import type { MessageType } from 'ant-design-vue/lib/message'
 
 export const loading = async (
   loadingText = 'Loading...',
@@ -7,7 +7,7 @@ export const loading = async (
 ) => {
   let loadingInstance: MessageType = null
   const loading = setTimeout(() => {
-    loadingInstance = message.loading(loadingText)
+    loadingInstance = message.loading(loadingText, 0)
   }, 100)
   try {
     return await processor()
