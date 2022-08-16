@@ -90,7 +90,7 @@ export const FormTab: DnFC<DefineComponent<any>> = composeExport(
                   const nodeId = {
                     [designer.props.nodeIdAttrName]: tab.id,
                   }
-                  console.log('tab:', tab)
+                  // console.log('tab:', tab)
                   return (
                     <TabPane
                       {...nodeId}

@@ -1,4 +1,4 @@
-export const NumberPicker = {
+export const InputNumber = {
   'zh-CN': {
     title: '数字输入',
     settings: {
