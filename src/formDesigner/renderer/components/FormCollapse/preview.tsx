@@ -23,7 +23,7 @@ import { uid } from '@designable/shared'
 const parseCollapse = (parent: TreeNode) => {
   const tabs: TreeNode[] = []
   parent.children.forEach((node) => {
-    if (matchComponent(node, 'FormCollapse.Item')) {
+    if (matchComponent(node, 'FormCollapse.CollapsePanel')) {
       tabs.push(node)
     }
   })
@@ -53,7 +53,7 @@ export const FormCollapse: DnFC<DefineComponent<any>> = composeExport(
             componentName: 'Field',
             props: {
               type: 'void',
-              'x-component': 'FormCollapse.Item',
+              'x-component': 'FormCollapse.CollapsePanel',
               'x-component-props': {
                 header: `Unnamed Title`,
               },
@@ -102,7 +102,7 @@ export const FormCollapse: DnFC<DefineComponent<any>> = composeExport(
             return (
               <Collapse
                 {...attrs}
-                modelValue={getCorrectActiveKey(activeKey, panels)}
+                activeKey={getCorrectActiveKey(activeKey, panels)}
                 accordion={props.accordion}
               >
                 {panels.map((panel) => {
@@ -111,14 +111,17 @@ export const FormCollapse: DnFC<DefineComponent<any>> = composeExport(
                     [designer.props.nodeIdAttrName]: panel.id,
                   }
                   return (
-                    <Collapse.Item {...attrs} key={panel.id} name={panel.id} v-slots={{
-                      title: () => {
+                    <Collapse.Panel
+                     {...attrs} 
+                     key={panel.id} 
+                     v-slots={{
+                      header: () => {
                         return (
                           <span
-                            data-content-editable="x-component-props.title"
+                            data-content-editable="x-component-props.header"
                             data-content-editable-node-id={panel.id}
                           >
-                            {props.title}
+                            {props.header}
                           </span>
                         )
                       }
@@ -132,10 +135,10 @@ export const FormCollapse: DnFC<DefineComponent<any>> = composeExport(
                         {panel.children.length ? (
                           <TreeNodeWidget node={panel} />
                         ) : (
-                          <DroppableWidget node={panel} />
+                          <DroppableWidget />
                         )}
                       </div>
-                    </Collapse.Item>
+                    </Collapse.Panel>
                   )
                 })}
               </Collapse >
@@ -154,7 +157,7 @@ export const FormCollapse: DnFC<DefineComponent<any>> = composeExport(
                         componentName: 'Field',
                         props: {
                           type: 'void',
-                          'x-component': 'FormCollapse.Item',
+                          'x-component': 'FormCollapse.CollapsePanel',
                           'x-component-props': {
                             header: `Unnamed Title`,
                           },
@@ -188,22 +191,22 @@ export const FormCollapse: DnFC<DefineComponent<any>> = composeExport(
             target.children.length === 0 ||
             source.every(
               (node) =>
-                node.props?.['x-component'] === 'FormCollapse.Item'
+                node.props?.['x-component'] === 'FormCollapse.CollapsePanel'
             ),
           propsSchema: createVoidFieldSchema(AllSchemas.FormCollapse),
         },
         designerLocales: AllLocales.FormCollapse,
       },
       {
-        name: 'FormCollapse.Item',
+        name: 'FormCollapse.CollapsePanel',
         extends: ['Field'],
         selector: (node) =>
-          node.props?.['x-component'] === 'FormCollapse.Item',
+          node.props?.['x-component'] === 'FormCollapse.CollapsePanel',
         designerProps: {
           droppable: true,
           allowDrop: (node) => node.props?.['x-component'] === 'FormCollapse',
           propsSchema: createVoidFieldSchema(
-            AllSchemas.FormCollapse.Item
+            AllSchemas.FormCollapse.CollapsePanel
           ),
         },
         designerLocales: AllLocales.FormCollapsePanel,
