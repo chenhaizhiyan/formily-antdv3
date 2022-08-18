@@ -20,22 +20,18 @@ Radio.Group = {
       'x-decorator': 'FormItem',
       'x-component': 'Radio.Group',
       'x-component-props': {
-        
+        defaultValue: 'default',
         optionType: 'button',
       },
     },
-    size: {
-      default: 'default',
+    buttonStyle: {
       type: 'string',
-      enum: ['large', 'default', 'small', null],
+      enum: ['outline', 'solid'],
       'x-decorator': 'FormItem',
-      'x-component': 'Select',
+      'x-component': 'Radio.Group',
       'x-component-props': {
-        
-      },
-      'x-reactions': (field) => {
-        field.visible =
-          field.form?.values?.['x-component-props']?.optionType === 'button'
+        defaultValue: 'outline',
+        optionType: 'button',
       },
     },
   },

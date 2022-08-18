@@ -7,15 +7,46 @@ export const Upload: ISchema & { Dragger?: ISchema } = {
       type: 'string',
       'x-decorator': 'FormItem',
       'x-component': 'Input',
-      'x-component-props': {
-        clearable: true,
-      },
+    },
+    accept: {
+      type: 'string',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
     },
     action: {
       'x-decorator': 'FormItem',
+      'x-component': 'ValueInput',
+      'x-component-props': {
+        include: ['TEXT', 'EXPRESSION'],
+      },
+    },
+    name: {
+      type: 'string',
+      'x-decorator': 'FormItem',
       'x-component': 'Input',
       'x-component-props': {
-        clearable: true,
+        defaultValue: 'file',
+      },
+    },
+    maxCount: {
+      type: 'number',
+      'x-decorator': 'FormItem',
+      'x-component': 'InputNumber',
+    },
+    method: {
+      enum: ['POST', 'PUT', 'GET'],
+      'x-decorator': 'FormItem',
+      'x-component': 'Radio.Group',
+      'x-component-props': {
+        defaultValue: 'POST',
+        optionType: 'button',
+      },
+    },
+    data: {
+      'x-decorator': 'FormItem',
+      'x-component': 'ValueInput',
+      'x-component-props': {
+        include: ['EXPRESSION'],
       },
     },
     headers: {
@@ -25,106 +56,48 @@ export const Upload: ISchema & { Dragger?: ISchema } = {
         include: ['EXPRESSION'],
       },
     },
-    multiple: {
-      type: 'boolean',
-      'x-decorator': 'FormItem',
-      'x-component': 'Switch',
-    },
-    data: {
-      'x-decorator': 'FormItem',
-      'x-component': 'ValueInput',
-      'x-component-props': {
-        include: ['EXPRESSION'],
-      },
-    },
-    name: {
-      default: 'file',
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
-        clearable: true,
-      },
-    },
-    'with-credentials': {
-      type: 'boolean',
-      'x-decorator': 'FormItem',
-      'x-component': 'Switch',
-      'x-component-props': {
-        clearable: true,
-      },
-    },
-    'show-file-list': {
-      type: 'boolean',
-      'x-decorator': 'FormItem',
-      'x-component': 'Switch',
-    },
-    drag: {
-      type: 'boolean',
-      'x-decorator': 'FormItem',
-      'x-component': 'Switch',
-    },
-    accept: {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
-        clearable: true,
-      },
-    },
-    'list-type': {
+
+    listType: {
       enum: ['text', 'picture', 'picture-card'],
       'x-decorator': 'FormItem',
       'x-component': 'Radio.Group',
       'x-component-props': {
         defaultValue: 'text',
         optionType: 'button',
-        
       },
     },
-    'auto-upload': {
+    directory: {
       type: 'boolean',
       'x-decorator': 'FormItem',
       'x-component': 'Switch',
     },
-    limit: {
-      type: 'number',
+    multiple: {
+      type: 'boolean',
       'x-decorator': 'FormItem',
-      'x-component': 'InputNumber',
+      'x-component': 'Switch',
+    },
+    openFileDialogOnClick: {
+      type: 'boolean',
+      'x-decorator': 'FormItem',
+      'x-component': 'Switch',
       'x-component-props': {
-        
+        defaultChecked: true,
       },
     },
-    // fileList: {}
-    // method: {
-    //   enum: ['POST', 'PUT', 'GET'],
-    //   'x-decorator': 'FormItem',
-    //   'x-component': 'Radio.Group',
-    //   'x-component-props': {
-    //     defaultValue: 'POST',
-    //     optionType: 'button',
-    //   },
-    // },
-    // directory: {
-    //   type: 'boolean',
-    //   'x-decorator': 'FormItem',
-    //   'x-component': 'Switch',
-    // },
-    // openFileDialogOnClick: {
-    //   type: 'boolean',
-    //   'x-decorator': 'FormItem',
-    //   'x-component': 'Switch',
-    //   'x-component-props': {
-    //     defaultChecked: true,
-    //   },
-    // },
-    // showUploadList: {
-    //   type: 'boolean',
-    //   'x-decorator': 'FormItem',
-    //   'x-component': 'Switch',
-    //   'x-component-props': {
-    //     defaultChecked: true,
-    //   },
-    // },
+    showUploadList: {
+      type: 'boolean',
+      'x-decorator': 'FormItem',
+      'x-component': 'Switch',
+      'x-component-props': {
+        defaultChecked: true,
+      },
+    },
+    withCredentials: {
+      type: 'boolean',
+      'x-decorator': 'FormItem',
+      'x-component': 'Switch',
+    },
   },
 }
+
+Upload.Dragger = Upload

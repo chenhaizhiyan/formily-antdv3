@@ -1,93 +1,92 @@
-import { merge } from '@formily/shared'
 import { ISchema } from '@formily/vue'
 
 export const Input: ISchema & { TextArea?: ISchema } = {
   type: 'object',
   properties: {
-    maxlength: {
-      type: 'number',
+    addonBefore: {
+      type: 'string',
       'x-decorator': 'FormItem',
-      'x-component': 'InputNumber',
+      'x-component': 'Input',
+    },
+    addonAfter: {
+      type: 'string',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+    },
+    prefix: {
+      type: 'string',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+    },
+    suffix: {
+      type: 'string',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+    },
+    allowClear: {
+      type: 'boolean',
+      'x-decorator': 'FormItem',
+      'x-component': 'Switch',
+    },
+    bordered: {
+      type: 'boolean',
+      'x-decorator': 'FormItem',
+      'x-component': 'Switch',
       'x-component-props': {
-
+        defaultChecked: true,
       },
     },
-    minlength: {
+    maxLength: {
       type: 'number',
       'x-decorator': 'FormItem',
       'x-component': 'InputNumber',
-      'x-component-props': {
-
-      },
-    },
-    'show-word-limit': {
-      type: 'number',
-      'x-decorator': 'FormItem',
-      'x-component': 'InputNumber',
-      'x-component-props': {
-
-      },
     },
     placeholder: {
       type: 'string',
       'x-decorator': 'FormItem',
       'x-component': 'Input',
-      'x-component-props': {
-        clearable: true,
-
-      },
-    },
-    clearable: {
-      type: 'boolean',
-      'x-decorator': 'FormItem',
-      'x-component': 'Switch',
-    },
-    'prefix-icon': {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
-
-      },
-    },
-    'suffix-icon': {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
-
-      },
-    },
-    autofocus: {
-      type: 'boolean',
-      'x-decorator': 'FormItem',
-      'x-component': 'Switch',
     },
     size: {
-      default: 'default',
       type: 'string',
-      enum: ['large', 'default', 'small', null],
+      enum: ['large', 'small', 'middle', null],
       'x-decorator': 'FormItem',
       'x-component': 'Select',
+      'x-component-props': {
+        defaultValue: 'middle',
+      },
     },
   },
 }
 
-Input.TextArea = merge(Input, {
+Input.TextArea = {
+  type: 'object',
   properties: {
-    rows: {
+    bordered: {
+      type: 'boolean',
+      'x-decorator': 'FormItem',
+      'x-component': 'Switch',
+      'x-component-props': {
+        defaultChecked: true,
+      },
+    },
+    maxLength: {
       type: 'number',
       'x-decorator': 'FormItem',
       'x-component': 'InputNumber',
-      'x-component-props': {},
+    },
+    placeholder: {
+      type: 'string',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
     },
     autoSize: {
       type: 'boolean',
       'x-decorator': 'FormItem',
       'x-component': 'Switch',
     },
-    size: {
-      'x-visible': false,
+    showCount: {
+      'x-decorator': 'FormItem',
+      'x-component': 'Switch',
     },
   },
-})
+}

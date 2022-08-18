@@ -8,7 +8,7 @@ import { AllSchemas } from '../../schemas'
 import { AllLocales } from '../../locales'
 import { VNode } from 'vue'
 
-const NumberPicker: DnFC<VNode> =
+export const InputNumber: DnFC<VNode> =
   composeExport(FormilyInputNumber, {
     Behavior: createBehavior({
       name: 'InputNumber',
@@ -20,7 +20,7 @@ const NumberPicker: DnFC<VNode> =
       designerLocales: AllLocales.InputNumber,
     }),
     Resource: createResource({
-      icon: 'NumberPickerSource',
+      icon: 'InputNumberSource',
       elements: [
         {
           componentName: 'Field',
@@ -37,5 +37,3 @@ const NumberPicker: DnFC<VNode> =
       ],
     }),
   })
-
-export const InputNumber = NumberPicker

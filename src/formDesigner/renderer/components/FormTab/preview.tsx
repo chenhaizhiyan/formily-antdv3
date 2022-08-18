@@ -54,7 +54,7 @@ export const FormTab: DnFC<DefineComponent<any>> = composeExport(
                 type: 'void',
                 'x-component': 'FormTab.TabPane',
                 'x-component-props': {
-                  label: `Unnamed Title`,
+                  tab: `Unnamed Title`,
                 },
               },
               children: source,
@@ -90,7 +90,7 @@ export const FormTab: DnFC<DefineComponent<any>> = composeExport(
                   const nodeId = {
                     [designer.props.nodeIdAttrName]: tab.id,
                   }
-                  console.log('tab:', tab)
+                  // console.log('tab:', tab)
                   return (
                     <TabPane
                       {...nodeId}
@@ -101,10 +101,10 @@ export const FormTab: DnFC<DefineComponent<any>> = composeExport(
                         tab: () => {
                           return (
                             <span
-                              data-content-editable="x-component-props.label"
+                              data-content-editable="x-component-props.tab"
                               data-content-editable-node-id={tab.id}
                             >
-                              {props.label}
+                              {props.tab}
                             </span>
                           )
                         }
@@ -142,7 +142,7 @@ export const FormTab: DnFC<DefineComponent<any>> = composeExport(
                           type: 'void',
                           'x-component': 'FormTab.TabPane',
                           'x-component-props': {
-                            label: `Unnamed Title`,
+                            tab: `Unnamed Title`,
                           },
                         },
                       })

@@ -1,4 +1,4 @@
-import { ISchema } from '@formily/react'
+import { ISchema } from '@formily/vue'
 
 export const CommonTimePickerAPI = {
   allowClear: {
@@ -71,7 +71,7 @@ export const CommonTimePickerAPI = {
   hourStep: {
     type: 'number',
     'x-decorator': 'FormItem',
-    'x-component': 'NumberPicker',
+    'x-component': 'InputNumber',
     'x-component-props': {
       defaultValue: 1,
     },
@@ -79,7 +79,7 @@ export const CommonTimePickerAPI = {
   minuteStep: {
     type: 'number',
     'x-decorator': 'FormItem',
-    'x-component': 'NumberPicker',
+    'x-component': 'InputNumber',
     'x-component-props': {
       defaultValue: 1,
     },
@@ -87,7 +87,7 @@ export const CommonTimePickerAPI = {
   secondStep: {
     type: 'number',
     'x-decorator': 'FormItem',
-    'x-component': 'NumberPicker',
+    'x-component': 'InputNumber',
     'x-component-props': {
       defaultValue: 1,
     },

@@ -3,21 +3,19 @@ export const Cascader = {
     title: '联级选择',
     settings: {
       'x-component-props': {
-        props: '属性',
-        size: { title: '尺寸', dataSource: ['大', '小', '迷你', '继承'] },
-        'show-all-levels': {
-          title: '路径',
-          tooltip: '输入框中是否显示选中值的完整路径',
+        changeOnSelect: {
+          title: '选择时触发',
+          tooltip: '点选每级菜单选项值都会发生变化',
         },
-        'collapse-tags': {
-          title: '折叠标签',
-          tooltip: '多选模式下是否折叠Tag',
+        displayRender: {
+          title: '渲染函数',
+          tooltip: '选择后展示的渲染函数，默认为label => label.join("/")	',
         },
-        separator: '选项分隔符',
-        debounce: '去抖延迟',
-        'before-filter': '筛选之前钩子',
-        'popper-class': '自定义浮层类名',
-        'filter-method': '过滤钩子',
+        fieldNames: {
+          title: '自定义字段名',
+          tooltip:
+            '默认值：{ label: "label", value: "value", children: "children" }',
+        },
       },
     },
   },
@@ -38,6 +36,27 @@ export const Cascader = {
           title: 'Field Names',
           tooltip:
             'Defaults：{ label: "label", value: "value", children: "children" }',
+        },
+      },
+    },
+  },
+  'ko-KR': {
+    title: 'Cascader',
+    settings: {
+      'x-component-props': {
+        changeOnSelect: {
+          title: '선택 시 변경',
+          tooltip: '메뉴 옵션 값의 레벨을 클릭하면 변경됩니다.',
+        },
+        displayRender: {
+          title: '디스플레이 렌더링',
+          tooltip:
+            '선택 후 실행되는 렌더링 함수로 기본 값은 label => label.join("/")	',
+        },
+        fieldNames: {
+          title: '필드 이름',
+          tooltip:
+            '기본 값：{ label: "label", value: "value", children: "children" }',
         },
       },
     },

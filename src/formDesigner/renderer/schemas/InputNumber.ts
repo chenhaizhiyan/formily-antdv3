@@ -1,59 +1,67 @@
 import { ISchema } from '@formily/vue'
 
-export const FormGrid: ISchema & { GridColumn?: ISchema } = {
+export const InputNumber: ISchema = {
   type: 'object',
   properties: {
-    minWidth: {
+    decimalSeparator: {
+      type: 'string',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+    },
+    precision: {
       type: 'number',
       'x-decorator': 'FormItem',
       'x-component': 'InputNumber',
+    },
+    max: {
+      type: 'number',
+      'x-decorator': 'FormItem',
+      'x-component': 'InputNumber',
+    },
+    min: {
+      type: 'number',
+      'x-decorator': 'FormItem',
+      'x-component': 'InputNumber',
+    },
+    step: {
+      type: 'number',
+      'x-decorator': 'FormItem',
+      'x-component': 'InputNumber',
+    },
+    placeholder: {
+      type: 'string',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+    },
+    size: {
+      type: 'string',
+      enum: ['large', 'small', 'middle', null],
+      'x-decorator': 'FormItem',
+      'x-component': 'Select',
       'x-component-props': {
-        defaultValue: 100,
+        defaultValue: 'middle',
       },
     },
-    maxWidth: {
-      type: 'number',
-      'x-decorator': 'FormItem',
-      'x-component': 'InputNumber',
-    },
-    minColumns: {
-      type: 'number',
-      'x-decorator': 'FormItem',
-      'x-component': 'InputNumber',
-      'x-component-props': {
-        defaultValue: 0,
-      },
-    },
-    maxColumns: {
-      type: 'number',
-      'x-decorator': 'FormItem',
-      'x-component': 'InputNumber',
-    },
-    breakpoints: {
-      type: 'number',
+    formatter: {
       'x-decorator': 'FormItem',
       'x-component': 'ValueInput',
       'x-component-props': {
         include: ['EXPRESSION'],
       },
     },
-    columnGap: {
-      type: 'number',
+    parser: {
       'x-decorator': 'FormItem',
-      'x-component': 'InputNumber',
+      'x-component': 'ValueInput',
       'x-component-props': {
-        defaultValue: 10,
+        include: ['EXPRESSION'],
       },
     },
-    rowGap: {
-      type: 'number',
+    stringMode: {
+      type: 'boolean',
       'x-decorator': 'FormItem',
-      'x-component': 'InputNumber',
-      'x-component-props': {
-        defaultValue: 5,
-      },
+      'x-component': 'Switch',
     },
-    colWrap: {
+    bordered: {
       type: 'boolean',
       'x-decorator': 'FormItem',
       'x-component': 'Switch',
@@ -61,18 +69,12 @@ export const FormGrid: ISchema & { GridColumn?: ISchema } = {
         defaultChecked: true,
       },
     },
-  },
-}
-
-FormGrid.GridColumn = {
-  type: 'object',
-  properties: {
-    gridSpan: {
-      type: 'number',
+    keyboard: {
+      type: 'boolean',
       'x-decorator': 'FormItem',
-      'x-component': 'InputNumber',
+      'x-component': 'Switch',
       'x-component-props': {
-        defaultValue: 1,
+        defaultChecked: true,
       },
     },
   },

@@ -28,7 +28,6 @@ export const Space: ISchema = {
       },
     },
     split: {
-      'x-visible': false,
       type: 'string',
       'x-decorator': 'FormItem',
       'x-component': 'Input',

@@ -7,13 +7,11 @@ export const FormLayout: ISchema = {
       type: 'number',
       'x-decorator': 'FormItem',
       'x-component': 'InputNumber',
-      'x-component-props': { size: 'small' },
     },
     wrapperCol: {
       type: 'number',
       'x-decorator': 'FormItem',
       'x-component': 'InputNumber',
-      'x-component-props': { size: 'small' },
     },
     labelWidth: {
       'x-decorator': 'FormItem',
@@ -27,49 +25,63 @@ export const FormLayout: ISchema = {
       type: 'boolean',
       'x-decorator': 'FormItem',
       'x-component': 'Switch',
-      // 'x-reactions': '{{(field) => { !field.value && field.setValue(true) }}}',
+      'x-component-props': {
+        defaultChecked: true,
+      },
     },
     feedbackLayout: {
       type: 'string',
       enum: ['loose', 'terse', 'popover', 'none', null],
       'x-decorator': 'FormItem',
       'x-component': 'Select',
-      // 'x-reactions': "{{ (field) => { !field.value && field.setValue('loose') }}}",
+      'x-component-props': {
+        defaultValue: 'loose',
+      },
     },
     size: {
       type: 'string',
       enum: ['large', 'small', 'default', null],
       'x-decorator': 'FormItem',
       'x-component': 'Select',
-      // 'x-reactions': "{{(field) => { !field.value && field.setValue('default') }}}",
+      'x-component-props': {
+        defaultValue: 'default',
+      },
     },
     layout: {
       type: 'string',
       enum: ['vertical', 'horizontal', 'inline', null],
       'x-decorator': 'FormItem',
       'x-component': 'Select',
-      // 'x-reactions': "{{(field) => { !field.value && field.setValue('horizontal') }}}",
+      'x-component-props': {
+        defaultValue: 'horizontal',
+      },
     },
     tooltipLayout: {
       type: 'string',
       enum: ['icon', 'text', null],
       'x-decorator': 'FormItem',
       'x-component': 'Select',
-      // 'x-reactions': "{{(field) => { !field.value && field.setValue('icon') }}}",
+      'x-component-props': {
+        defaultValue: 'icon',
+      },
     },
     labelAlign: {
       type: 'string',
       enum: ['left', 'right', null],
       'x-decorator': 'FormItem',
       'x-component': 'Select',
-      // 'x-reactions': "{{(field) => { !field.value && field.setValue('right') }}}",
+      'x-component-props': {
+        defaultValue: 'right',
+      },
     },
     wrapperAlign: {
       type: 'string',
       enum: ['left', 'right', null],
       'x-decorator': 'FormItem',
       'x-component': 'Select',
-      // 'x-reactions': "{{(field) => { !field.value && field.setValue('left') }}}",
+      'x-component-props': {
+        defaultValue: 'left',
+      },
     },
     labelWrap: {
       type: 'boolean',
@@ -96,13 +108,17 @@ export const FormLayout: ISchema = {
       type: 'boolean',
       'x-decorator': 'FormItem',
       'x-component': 'Switch',
-      // 'x-reactions': '{{(field) => { !field.value && field.setValue(true) }}}',
+      'x-component-props': {
+        defaultChecked: true,
+      },
     },
     bordered: {
       type: 'boolean',
       'x-decorator': 'FormItem',
       'x-component': 'Switch',
-      // 'x-reactions': '{{(field) => { !field.value && field.setValue(true) }}}',
+      'x-component-props': {
+        defaultChecked: true,
+      },
     },
   },
 }

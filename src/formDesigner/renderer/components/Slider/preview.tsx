@@ -1,29 +1,31 @@
 import { Slider as ASlider } from 'ant-design-vue'
 import { composeExport, transformComponent } from '@form-designer/components/__builtins__'
-import { connect, mapProps, mapReadPretty, VueComponent } from '@formily/vue'
+// import { connect, mapProps, mapReadPretty, VueComponent } from '@formily/vue'
 import { createBehavior, createResource } from '@designable/core'
 import { createFieldSchema } from '../Field'
 
 import { AllSchemas } from '../../schemas'
 import { AllLocales } from '../../locales'
-import { PreviewText } from '@form-designer/components'
+// import { PreviewText } from '@form-designer/components'
+import { DnFC } from '@form-designer/prototypes'
+import { VNode } from 'vue'
 
 
-const TransformSlider = transformComponent(ASlider, {
-  change: 'updatev-model:value',
-})
+// const TransformSlider = transformComponent(ASlider, {
+//   change: 'updatev-model:value',
+// })
 
-const InnerSlider = connect(
-  TransformSlider,
-  mapProps({
-    value: 'modelValue',
-    readOnly: 'readonly',
-  }),
-  mapReadPretty(PreviewText.Input)
-)
+// const InnerSlider = connect(
+//   TransformSlider,
+//   mapProps({
+//     value: 'modelValue',
+//     readOnly: 'readonly',
+//   }),
+//   mapReadPretty(PreviewText.Input)
+// )
 
-export const Slider = composeExport(
-  InnerSlider,
+export const Slider: DnFC<VNode> = composeExport(
+  ASlider,
   {
     Behavior: createBehavior({
       name: 'Slider',

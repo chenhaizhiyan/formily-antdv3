@@ -3,37 +3,44 @@ import { ISchema } from '@formily/vue'
 export const ArrayTable: ISchema & { Addition?: ISchema; Column?: ISchema } = {
   type: 'object',
   properties: {
-    stripe: {
-      default: false,
+    bordered: {
       type: 'boolean',
       'x-decorator': 'FormItem',
       'x-component': 'Switch',
+      'x-component-props': {
+        defaultChecked: true,
+      },
     },
-    border: {
-      default: false,
+    showHeader: {
       type: 'boolean',
       'x-decorator': 'FormItem',
       'x-component': 'Switch',
+      'x-component-props': {
+        defaultChecked: true,
+      },
     },
-    'show-header': {
-      default: true,
-      type: 'boolean',
-      'x-decorator': 'FormItem',
-      'x-component': 'Switch',
-    },
-    fit: {
+    sticky: {
       type: 'boolean',
       'x-decorator': 'FormItem',
       'x-component': 'Switch',
     },
     size: {
-      default: 'small',
       type: 'string',
-      enum: ['large', 'default', 'small'],
+      enum: ['large', 'small', 'middle'],
       'x-decorator': 'FormItem',
       'x-component': 'Select',
       'x-component-props': {
-
+        defaultValue: 'small',
+      },
+    },
+    tableLayout: {
+      type: 'string',
+      enum: ['auto', 'fixed'],
+      'x-decorator': 'FormItem',
+      'x-component': 'Radio.Group',
+      'x-component-props': {
+        defaultValue: 'auto',
+        optionType: 'button',
       },
     },
   },
@@ -42,75 +49,38 @@ export const ArrayTable: ISchema & { Addition?: ISchema; Column?: ISchema } = {
 const Column: ISchema = {
   type: 'object',
   properties: {
-    label: {
+    title: {
       type: 'string',
       'x-decorator': 'FormItem',
       'x-component': 'Input',
-      'x-component-props': {
-
-        clearable: true,
-      },
-    },
-    prop: {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
-
-        clearable: true,
-      },
-    },
-    width: {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'InputNumber',
-      'x-component-props': {
-
-      },
-    },
-    'min-width': {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'InputNumber',
-      'x-component-props': {
-
-      },
-    },
-    fixed: {
-      type: 'string',
-      enum: ['left', 'right'],
-      'x-decorator': 'FormItem',
-      'x-component': 'Select',
-      'x-component-props': {
-
-        clearable: true,
-      },
-      'x-reactions': (field) => {
-        if (field.value === '') {
-          field.display = 'none'
-        } else {
-          field.display = 'visible'
-        }
-      },
-    },
-    sortable: {
-      type: 'boolean',
-      'x-decorator': 'FormItem',
-      'x-component': 'Switch',
-    },
-    resizable: {
-      default: true,
-      type: 'boolean',
-      'x-decorator': 'FormItem',
-      'x-component': 'Switch',
     },
     align: {
       type: 'string',
-      enum: ['left', 'center', 'right'],
+      enum: ['left', 'right', 'center'],
       'x-decorator': 'FormItem',
-      'x-component': 'Select',
+      'x-component': 'Radio.Group',
       'x-component-props': {
-
+        defaultValue: 'left',
+        optionType: 'button',
+      },
+    },
+    colSpan: {
+      type: 'number',
+      'x-decorator': 'FormItem',
+      'x-component': 'InputNumber',
+    },
+    width: {
+      type: 'number',
+      'x-decorator': 'FormItem',
+      'x-component': 'InputNumber',
+    },
+    fixed: {
+      type: 'string',
+      enum: ['left', 'right', false],
+      'x-decorator': 'FormItem',
+      'x-component': 'Radio.Group',
+      'x-component-props': {
+        optionType: 'button',
       },
     },
   },
@@ -119,15 +89,6 @@ const Column: ISchema = {
 const Addition: ISchema = {
   type: 'object',
   properties: {
-    title: {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
-
-        clearable: true,
-      },
-    },
     method: {
       type: 'string',
       enum: ['push', 'unshift'],
@@ -141,11 +102,7 @@ const Addition: ISchema = {
     defaultValue: {
       type: 'string',
       'x-decorator': 'FormItem',
-      'x-component': 'Input',
-      'x-component-props': {
-
-        clearable: true,
-      },
+      'x-component': 'ValueInput',
     },
   },
 }

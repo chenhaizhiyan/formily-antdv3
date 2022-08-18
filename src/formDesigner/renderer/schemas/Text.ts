@@ -9,11 +9,12 @@ export const Text: ISchema = {
       'x-component': 'Input.TextArea',
     },
     mode: {
-      default: 'normal',
       type: 'string',
       'x-decorator': 'FormItem',
       'x-component': 'Select',
-      'x-component-props': {},
+      'x-component-props': {
+        defaultValue: 'normal',
+      },
       enum: ['h1', 'h2', 'h3', 'p', 'normal'],
     },
   },

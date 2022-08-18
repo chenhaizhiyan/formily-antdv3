@@ -4,14 +4,16 @@ export const FormTab = {
     addTabPane: '添加选项卡',
     settings: {
       'x-component-props': {
-        type: { title: '类型', dataSources: ['card', 'border-card'] },
-        closable: '可关闭',
-        addable: '可增加',
-        editable: '可增加和关闭',
-        stretch: '宽度是否自撑开',
-        'tab-position': '	选项卡所在位置',
-        'before-leave':
-          '切换标签之前的钩子，若返回 false 或者返回 Promise 且被 reject，则阻止切换。',
+        animated: '启用动画过渡',
+        centered: '标签居中',
+        tab: '选项名称',
+        type: {
+          title: '类型',
+          dataSource: [
+            { label: '线框', value: 'line' },
+            { label: '卡片', value: 'card' },
+          ],
+        },
       },
     },
   },
@@ -33,6 +35,24 @@ export const FormTab = {
       },
     },
   },
+  'ko-KR': {
+    title: '탭',
+    addTabPane: '패널 추가',
+    settings: {
+      'x-component-props': {
+        animated: '애니메이션 활성화',
+        centered: '레이블을 가운데로',
+        tab: '텝 제목',
+        type: {
+          title: '타입',
+          dataSource: [
+            { label: '라인', value: 'line' },
+            { label: '카드', value: 'card' },
+          ],
+        },
+      },
+    },
+  },
 }
 
 export const FormTabPane = {
@@ -40,14 +60,7 @@ export const FormTabPane = {
     title: '选项卡面板',
     settings: {
       'x-component-props': {
-        label: '面板标题',
-        disabled: '禁用',
-        name: {
-          title: '列表中的顺序值',
-          tooltip: `该选项卡在选项卡列表中的顺序值，如第一个选项卡则为'1'`,
-        },
-        closable: '标签是否可关闭',
-        lazy: '标签是否延迟渲染',
+        tab: '面板标题',
       },
     },
   },
@@ -55,14 +68,15 @@ export const FormTabPane = {
     title: 'Tab Panel',
     settings: {
       'x-component-props': {
-        label: '面板标题',
-        disabled: '禁用',
-        name: {
-          title: '列表中的顺序值',
-          tooltip: `该选项卡在选项卡列表中的顺序值，如第一个选项卡则为'1'`,
-        },
-        closable: '标签是否可关闭',
-        lazy: '标签是否延迟渲染',
+        tab: 'Panel Title',
+      },
+    },
+  },
+  'ko-KR': {
+    title: '탭 패널',
+    settings: {
+      'x-component-props': {
+        tab: '패널 제목',
       },
     },
   },

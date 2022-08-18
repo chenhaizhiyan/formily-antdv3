@@ -92,10 +92,10 @@ const FormTabInner = observer(
                   count: errors.length,
                   size: 'small',
                 },
-                { default: () => props.label }
+                { default: () => props.tab }
               )
           }
-          return props.label
+          return props.tab
         }
 
         const getTabs = (tabs) => {
