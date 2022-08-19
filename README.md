@@ -1,11 +1,17 @@
 # formily-antdv3
 适配formilyjs antdv3版本，采用vite+vue3+ant-design-vue 3.x版本。
 
-基于 [https://github.com/qq1037305420/element-plus](https://github.com/qq1037305420/element-plus) 修改。
+在线预览地址[https://chenhaizhiyan.github.io/formily-antdv3/](https://chenhaizhiyan.github.io/formily-antdv3/)
 
+与官网React版对比：
+1. 隐藏了滑动条、树选择、联级选择、穿梭框、上传、自增表格控件
+2. 属性配置和官方react版的一样，全部测试过一遍，大部分属性配置都是正常的
+3. 配置可选项没支持树形配置
+4. 缺少配置响应器功能
 
-注：还未完成，仅供参考。
+![image](https://user-images.githubusercontent.com/10290768/185564545-e0b462eb-3263-4041-a09e-3af2d9681d1b.png)
 
+以下是formily官方信息
 
 <p align="center">
 <img src="https://img.alicdn.com/tfs/TB1fHhZu4D1gK0jSZFyXXciOVXa-2500-1200.png">
