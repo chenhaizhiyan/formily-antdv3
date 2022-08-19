@@ -1,29 +1,9 @@
 import { GlobalRegistry } from '@designable/core'
 import { ISchema } from '@formily/vue'
 
-export const Card: ISchema & { Addition?: ISchema } = {
+export const Card: ISchema & { Extra?: ISchema, Body?: ISchema } = {
   type: 'object',
   properties: {
-    title: {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-    },
-    extra: {
-      type: 'string',
-      'x-decorator': 'FormItem',
-      'x-component': 'Input',
-    },
-    type: {
-      type: 'boolean',
-      enum: GlobalRegistry.getDesignerMessage('settings.cardTypes'),
-      'x-decorator': 'FormItem',
-      'x-component': 'Radio.Group',
-      'x-component-props': {
-        defaultValue: '',
-        optionType: 'button',
-      },
-    },
     bordered: {
       type: 'boolean',
       'x-decorator': 'FormItem',
@@ -32,5 +12,22 @@ export const Card: ISchema & { Addition?: ISchema } = {
         defaultChecked: true,
       },
     },
+  },
+}
+
+Card.Title = {
+  type: 'object',
+  properties: {
+    title: {
+      type: 'string',
+      'x-decorator': 'FormItem',
+      'x-component': 'Input',
+    },
+  },
+}
+
+Card.Body = {
+  type: 'object',
+  properties: {
   },
 }
