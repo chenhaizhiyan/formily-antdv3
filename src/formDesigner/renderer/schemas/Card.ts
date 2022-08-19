@@ -1,7 +1,7 @@
 import { GlobalRegistry } from '@designable/core'
 import { ISchema } from '@formily/vue'
 
-export const Card: ISchema & { Extra?: ISchema, Body?: ISchema } = {
+export const Card: ISchema & { Title?: ISchema, Body?: ISchema } = {
   type: 'object',
   properties: {
     bordered: {

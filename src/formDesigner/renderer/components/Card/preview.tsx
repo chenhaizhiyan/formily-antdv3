@@ -75,7 +75,7 @@ export const Card: DnFC<VNode> = composeExport(
       extends: ['Field'],
       selector: (node) => node.props?.['x-component'] === 'Card',
       designerProps: {
-        droppable: true,
+        // droppable: true,
         propsSchema: createVoidFieldSchema(AllSchemas.Card),
       },
       designerLocales: AllLocales.Card,
