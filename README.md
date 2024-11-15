@@ -70,7 +70,7 @@ https://v1.formilyjs.org
 ## 贡献者
 
 This project exists thanks to all the people who contribute.
-<a href="https://github.com/chenhaizhiyan/formily-antdv3/graphs/contributors"><img src="https://contrib.rocks/image?repo=alibaba/formily" /></a>
+<a href="https://github.com/chenhaizhiyan/formily-antdv3/graphs/contributors"><img src="https://contrib.rocks/image?repo=chenhaizhiyan/formily-antdv3" /></a>
 
 ## LICENSE
 
